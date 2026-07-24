@@ -1,0 +1,50 @@
+@use "sass:map";
+@use "./variables" as vars; // Import variables with a namespace
+
+// 3-point header
+@mixin line-clamp($num, $num-sp: null) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: $num;
+  -webkit-box-orient: vertical;
+
+  @if $num-sp {
+    @include sp {
+      -webkit-line-clamp: $num-sp;
+    }
+  }
+}
+
+// hover (Applies only to devices that support it)
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+// media query
+@mixin mq_free($bp: map.get(vars.$breakpoints, md)) {
+  @media screen and (max-width: #{$bp}px) {
+    @content;
+  }
+}
+
+@mixin pc() {
+  @media screen and (min-width: #{map.get(vars.$breakpoints, lg)}) {
+    @content;
+  }
+}
+
+@mixin tab() {
+  @media screen and (max-width: #{map.get(vars.$breakpoints, lg)}) {
+    @content;
+  }
+}
+
+@mixin sp() {
+  @media screen and (max-width: #{map.get(vars.$breakpoints, md)}) {
+    @content;
+  }
+}

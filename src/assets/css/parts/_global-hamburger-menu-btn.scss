@@ -1,0 +1,71 @@
+@use "../base/variables" as vars;
+
+.global-hamburger-menu-btn {
+  position: relative;
+  z-index: 999;
+  display: none;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-radius: vars.$radius-md;
+  transition: background vars.$duration-short;
+
+  &:hover {
+    background: rgb(255 255 255 / 10%);
+  }
+
+  @media only screen and (width <= 1280px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.global-hamburger-menu-btn__line {
+  position: absolute;
+  left: 50%;
+  width: 24px;
+  height: 2px;
+  margin-left: -12px;
+  background-color: vars.$color-white;
+  border-radius: 1px;
+  transition: all vars.$duration-base vars.$easing-smooth;
+}
+
+.global-hamburger-menu-btn__line:nth-of-type(1) {
+  top: 14px;
+}
+
+.global-hamburger-menu-btn__line:nth-of-type(2) {
+  top: 50%;
+  margin-top: -1px;
+}
+
+.global-hamburger-menu-btn__line:nth-of-type(3) {
+  bottom: 14px;
+}
+
+// Open state - X animation
+.is-hamburger-menu-open .global-hamburger-menu-btn {
+  background: rgb(255 255 255 / 10%);
+}
+
+.is-hamburger-menu-open .global-hamburger-menu-btn__line:nth-of-type(1) {
+  top: 50%;
+  margin-top: -1px;
+  transform: rotate(45deg);
+}
+
+.is-hamburger-menu-open .global-hamburger-menu-btn__line:nth-of-type(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.is-hamburger-menu-open .global-hamburger-menu-btn__line:nth-of-type(3) {
+  bottom: 50%;
+  margin-bottom: -1px;
+  transform: rotate(-45deg);
+}

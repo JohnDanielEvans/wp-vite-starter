@@ -1,0 +1,132 @@
+// breakpoints
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+// design size
+$design-size: (
+  "pc-width": 1440,
+  "pc-height": 800,
+  "sp-width": 750,
+  "sp-height": 1334,
+);
+
+// ============================================
+// MODERN COLOR SYSTEM
+// ============================================
+
+// Primary brand colors — placeholder values, swap for your palette
+$color-green: #22C55E;
+$color-green-light: #4ADE80;
+$color-green-dark: #16A34A;
+$color-teal: #06B6D4;
+$color-teal-light: #22D3EE;
+$color-blue: #6366F1;
+$color-blue-light: #818CF8;
+
+// Dark palette
+$color-navy: #0F172A;
+$color-dark-blue: #1E293B;
+$color-darkest-blue: #020617;
+$color-surface-dark: #111827;
+$color-surface-elevated: #1F2937;
+
+// Light palette
+$color-white: #ffffff;
+$color-off-white: #F8FAFC;
+$color-silver: #A3A3A3;
+$color-muted: #6B7280;
+
+// Utility colors
+$color-black: #1a1a1a;
+$color-trans-box: rgb(230 230 230 / 25%);
+
+// ============================================
+// MODERN FONTS
+// ============================================
+// Primary: DM Sans - Clean, geometric sans-serif for body
+// Display: Plus Jakarta Sans - Modern, refined for headings
+$font-primary: "DM Sans", -apple-system, blinkmacsystemfont, "Segoe UI", sans-serif;
+$font-display: "Plus Jakarta Sans", "DM Sans", sans-serif;
+$font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+// ============================================
+// GRADIENTS
+// ============================================
+$gradient-brand: linear-gradient(135deg, $color-green 0%, $color-teal 50%, $color-blue 100%);
+$gradient-brand-reverse: linear-gradient(135deg, $color-blue 0%, $color-teal 50%, $color-green 100%);
+$gradient-glow: linear-gradient(135deg, rgba($color-green, 0.4) 0%, rgba($color-teal, 0.2) 50%, rgba($color-blue, 0.4) 100%);
+$gradient-surface: linear-gradient(180deg, $color-surface-dark 0%, $color-darkest-blue 100%);
+$gradient-card: linear-gradient(135deg, rgb(255 255 255 / 5%) 0%, rgb(255 255 255 / 2%) 100%);
+$gradient-hero: radial-gradient(ellipse at 50% 0%, rgba($color-blue, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba($color-green, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 20% 80%, rgba($color-teal, 0.1) 0%, transparent 40%);
+$gradient-green-teal: linear-gradient(135deg, $color-green, $color-teal);
+$gradient-blue-teal: linear-gradient(135deg, $color-blue, $color-teal);
+
+// ============================================
+// GLASS EFFECTS
+// ============================================
+$glass-bg: rgb(255 255 255 / 3%);
+$glass-border: rgb(255 255 255 / 8%);
+$glass-blur: 20px;
+$glass-bg-light: rgb(255 255 255 / 80%);
+$glass-border-light: rgb(255 255 255 / 50%);
+
+// ============================================
+// SHADOWS
+// ============================================
+$shadow-sm: 0 2px 8px rgb(0 0 0 / 10%);
+$shadow-md: 0 4px 16px rgb(0 0 0 / 15%);
+$shadow-lg: 0 8px 32px rgb(0 0 0 / 20%);
+$shadow-xl: 0 16px 48px rgb(0 0 0 / 25%);
+$shadow-glow-green: 0 0 40px rgba($color-green, 0.3);
+$shadow-glow-teal: 0 0 40px rgba($color-teal, 0.3);
+$shadow-glow-blue: 0 0 40px rgba($color-blue, 0.3);
+
+// ============================================
+// BORDER RADIUS
+// ============================================
+$radius-sm: 6px;
+$radius-md: 12px;
+$radius-lg: 20px;
+$radius-xl: 28px;
+$radius-full: 9999px;
+
+// ============================================
+// ANIMATIONS
+// ============================================
+$duration-fast: 0.15s;
+$duration-short: 0.3s;
+$duration-base: 0.4s;
+$duration-full: 0.6s;
+$duration-slow: 0.8s;
+
+// easing
+$easing-transform: cubic-bezier(0.43, 0.05, 0.17, 1);
+$easing-material: cubic-bezier(0.26, 0.16, 0.1, 1);
+$easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+$easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+// ============================================
+// SPACING SCALE
+// ============================================
+$space-1: 0.25rem;  // 4px
+$space-2: 0.5rem;   // 8px
+$space-3: 0.75rem;  // 12px
+$space-4: 1rem;     // 16px
+$space-5: 1.5rem;   // 24px
+$space-6: 2rem;     // 32px
+$space-7: 3rem;     // 48px
+$space-8: 4rem;     // 64px
+$space-9: 6rem;     // 96px
+$space-10: 8rem;    // 128px
+$space-11: 10rem;   // 160px
+$space-12: 12rem;   // 192px
+
+// base directory
+$base-dir: "../../../";

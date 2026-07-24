@@ -1,0 +1,422 @@
+// ============================================
+// SHARED COMPONENTS & MIXINS
+// Reusable patterns across the site
+// ============================================
+@use "./variables" as vars;
+
+// ============================================
+// SHARED KEYFRAME ANIMATIONS
+// Centralized animations to reduce duplication
+// ============================================
+
+// Grid/background pulse effect
+@keyframes pulse-grid {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+// Floating orb movement
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 30px) scale(0.9); }
+}
+
+// Ring rotation (for decorative elements)
+@keyframes ring-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+// Scanline animation
+@keyframes scanlines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100px); }
+}
+
+// Particle float effect
+@keyframes particle-float {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+
+  25% {
+    opacity: 0.6;
+    transform: translate(20px, -30px) scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: translate(-10px, -60px) scale(0.8);
+  }
+
+  75% {
+    opacity: 0.6;
+    transform: translate(15px, -90px) scale(1);
+  }
+}
+
+// Node pulse (for neural network effects)
+@keyframes node-pulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+// Ring pulse effect
+@keyframes ring-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+// Gentle float
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+// Glow pulse
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+// Neural path drawing
+@keyframes draw-path {
+  0% { stroke-dashoffset: 1000; }
+  50% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1000; }
+}
+
+// ============================================
+// DECORATIVE ORBS/BLOOMS
+// ============================================
+@mixin decorative-orb($color: vars.$color-green, $size: 400px) {
+  position: absolute;
+  width: $size;
+  height: $size;
+  pointer-events: none;
+  background: $color;
+  border-radius: 50%;
+  opacity: 0.3;
+  filter: blur(120px);
+}
+
+%bloom-base {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0.3;
+  filter: blur(120px);
+}
+
+%bloom-1 {
+  @extend %bloom-base;
+
+  top: -100px;
+  right: -200px;
+  width: 400px;
+  height: 400px;
+  background: vars.$color-green;
+
+  @media (width <= 991px) {
+    right: -100px;
+    width: 250px;
+    height: 250px;
+  }
+}
+
+%bloom-2 {
+  @extend %bloom-base;
+
+  top: 300px;
+  left: -300px;
+  width: 500px;
+  height: 500px;
+  background: vars.$color-blue;
+
+  @media (width <= 991px) {
+    left: -150px;
+    width: 300px;
+    height: 300px;
+  }
+}
+
+// ============================================
+// GLASS CARD
+// ============================================
+@mixin glass-card {
+  background: vars.$glass-bg;
+  border: 1px solid vars.$glass-border;
+  border-radius: vars.$radius-lg;
+  backdrop-filter: blur(vars.$glass-blur);
+  transition: all vars.$duration-base vars.$easing-smooth;
+}
+
+@mixin glass-card-hover {
+  background: rgb(255 255 255 / 6%);
+  border-color: rgb(255 255 255 / 12%);
+  box-shadow: vars.$shadow-lg;
+  transform: translateY(-4px);
+}
+
+// ============================================
+// CARD CTA BUTTON
+// ============================================
+@mixin card-cta {
+  display: inline-flex;
+  gap: vars.$space-2;
+  align-items: center;
+  margin-top: auto;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: vars.$color-dark-blue;
+  transition: color vars.$duration-short;
+
+  svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    transition: transform vars.$duration-short;
+  }
+}
+
+@mixin card-cta-hover {
+  color: vars.$color-green;
+
+  svg {
+    transform: translateX(4px);
+  }
+}
+
+// ============================================
+// ARCHIVE PAGE HEADER
+// ============================================
+@mixin archive-header {
+  margin-top: calc(80px + vars.$space-6);
+  margin-bottom: vars.$space-8;
+  text-align: center;
+
+  @media (width <= 991px) {
+    margin-top: calc(80px + vars.$space-8);
+  }
+}
+
+@mixin archive-title {
+  margin-bottom: vars.$space-4;
+  background: vars.$gradient-brand;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin archive-desc {
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 1.125rem;
+  color: rgba(vars.$color-white, 0.75);
+}
+
+// ============================================
+// PAGINATION
+// ============================================
+@mixin pagination {
+  margin-top: vars.$space-8;
+  text-align: center;
+
+  .nav-links {
+    display: flex;
+    gap: vars.$space-2;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: vars.$space-2 vars.$space-3;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: rgba(vars.$color-white, 0.7);
+    text-decoration: none;
+    background: vars.$glass-bg;
+    border: 1px solid vars.$glass-border;
+    border-radius: vars.$radius-md;
+    transition: all vars.$duration-short;
+
+    &:hover {
+      color: vars.$color-white;
+      background: rgba(vars.$color-green, 0.2);
+      border-color: vars.$color-green;
+    }
+
+    &.current {
+      color: vars.$color-darkest-blue;
+      background: vars.$color-green;
+      border-color: vars.$color-green;
+    }
+  }
+}
+
+// ============================================
+// CARD PLACEHOLDER (no image fallback)
+// ============================================
+@mixin card-placeholder($accent-color: vars.$color-green) {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, vars.$color-dark-blue 0%, vars.$color-navy 100%);
+
+  // Grid pattern overlay
+  &::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background-image: 
+      linear-gradient(rgba($accent-color, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($accent-color, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  // Decorative gradient orb
+  &::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    content: "";
+    background: radial-gradient(
+      circle,
+      rgba($accent-color, 0.15) 0%,
+      rgba(vars.$color-teal, 0.1) 40%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    filter: blur(20px);
+    transform: translate(-50%, -50%);
+  }
+}
+
+// ============================================
+// WHITE CARD (for archive items)
+// ============================================
+@mixin white-card {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: vars.$color-white;
+  border-radius: vars.$radius-lg;
+  box-shadow: vars.$shadow-md;
+  transition: all vars.$duration-base vars.$easing-smooth;
+}
+
+@mixin white-card-hover {
+  box-shadow: vars.$shadow-xl, 0 0 0 2px vars.$color-green;
+  transform: translateY(-8px);
+}
+
+// ============================================
+// SECTION GRADIENT LINE
+// ============================================
+@mixin gradient-line($width: 100%) {
+  position: absolute;
+  width: $width;
+  height: 1px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(vars.$color-green, 0.5) 20%,
+    rgba(vars.$color-teal, 0.7) 50%,
+    rgba(vars.$color-blue, 0.5) 80%,
+    transparent 100%
+  );
+}
+
+// ============================================
+// PROSE CONTENT (for single pages)
+// ============================================
+@mixin prose-content {
+  font-size: 1.0625rem;
+  line-height: 1.9;
+  color: rgba(vars.$color-white, 0.9);
+
+  p {
+    margin-bottom: vars.$space-5;
+    text-wrap: pretty;
+  }
+
+  h2, h3, h4 {
+    margin-top: vars.$space-7;
+    margin-bottom: vars.$space-4;
+    color: vars.$color-white;
+  }
+
+  a {
+    color: vars.$color-green;
+
+    &:hover {
+      color: vars.$color-green-light;
+    }
+  }
+
+  ul, ol {
+    padding-left: vars.$space-5;
+    margin-bottom: vars.$space-5;
+
+    li {
+      margin-bottom: vars.$space-2;
+
+      &::marker {
+        color: vars.$color-green;
+      }
+    }
+  }
+
+  blockquote {
+    padding: vars.$space-5;
+    margin: vars.$space-6 0;
+    font-style: italic;
+    background: vars.$glass-bg;
+    border-left: 4px solid vars.$color-green;
+    border-radius: 0 vars.$radius-md vars.$radius-md 0;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  figure {
+    margin: vars.$space-6 0;
+
+    img {
+      border-radius: vars.$radius-lg;
+    }
+
+    figcaption {
+      margin-top: vars.$space-3;
+      font-size: 0.875rem;
+      color: vars.$color-muted;
+      text-align: center;
+    }
+  }
+}
+

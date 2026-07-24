@@ -1,0 +1,11 @@
+**/node_modules/**
+**/vendor/**
+**/dist/**
+**/public/**
+**/src/assets/scss/vendors/**
+**/src/assets/scss/utilities/_animations.scss
+**/animate.css
+deploy/
+**/deploy/
+deploy/**/*.scss
+deploy/**/*.css

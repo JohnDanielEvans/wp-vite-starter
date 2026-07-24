@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependencies
+node_modules
+
+# Build outputs
+dist/
+dist-ssr/
+deploy/
+*.zip
+*.local
+
+# Database dumps — never commit these. They contain wp_users rows
+# (emails, password hashes) and plugin API keys stored in wp_options.
+sql/*
+!sql/.gitkeep
+
+# Plugins are installed per-site, not vendored
+plugins/*
+!plugins/.gitkeep
+
+# WordPress uploads are site content, not theme code
+uploads/*
+!uploads/.gitkeep
+wp-content/
+
+# CI writes the SSH deploy key here at runtime — never commit it
+deploy_key

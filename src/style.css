@@ -1,0 +1,9 @@
+/*
+Theme Name: WP Vite Starter
+Author: John Evans
+Description: A WordPress starter theme with a wp-env + Vite local development harness, image optimization pipeline, asset cache-busting, and rsync-based CI deployment.
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 8.1
+Text Domain: wp-vite-starter
+*/

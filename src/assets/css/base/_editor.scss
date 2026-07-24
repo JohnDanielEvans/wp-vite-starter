@@ -1,0 +1,191 @@
+@use "./variables" as vars; // Import variables with a namespace
+
+.has-text-align-center {
+  display: block;
+  text-align: center;
+}
+
+
+.wp-block-columns {
+  display: flex;
+  margin: 20px 0;
+}
+
+.wp-block-column {
+  flex: 1;
+  margin: 0 20px;
+}
+
+.wp-font-awesome-icon {
+  svg {
+    max-width:150px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+@media (width <= 991px) {
+  .card-container {
+    flex-direction: column;
+
+    .wp-font-awesome-icon {
+      svg {
+        margin-bottom: 3rem;
+      }
+    }
+  }
+}
+
+.editor {
+  & h1 {
+    padding-bottom: 18px;
+    margin: 40px 0;
+    font-size: vw(32);
+    font-weight: bold;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    border-bottom: solid 2px vars.$color-white; // Use the namespace to reference the variable
+  }
+
+  & h2 {
+    padding-bottom: 18px;
+    margin: 40px 0;
+    font-size: vw(20);
+    font-weight: bold;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    border-bottom: solid 2px vars.$color-white; // Use the namespace
+  }
+
+  & h3 {
+    padding: 8px 34px;
+    margin: 40px 0;
+    font-size: vw(18);
+    font-weight: bold;
+    line-height: 1.8;
+    color: vars.$color-black; // Use the namespace
+    letter-spacing: 0.05em;
+    background-color: vars.$color-white; // Use the namespace
+    border-radius: vw(10);
+  }
+
+  & h4 {
+    padding: 0 18px;
+    margin: 40px 0;
+    font-size: vw(16);
+    font-weight: bold;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    border-left: solid 4px vars.$color-white; // Use the namespace
+  }
+
+  & h5 {
+    margin: 40px 0;
+    font-size: vw(16);
+    font-weight: bold;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  & .wp-block-image {
+    margin: 60px 0;
+
+    & img {
+      width: 100%;
+    }
+
+    & figcaption {
+      margin: 18px 0 0;
+      font-size: vw(10);
+      font-weight: 500;
+      line-height: 1.8;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+  }
+
+  & img {
+    width: 100%;
+  }
+
+  & ul {
+    margin: 32px 0;
+
+    & li {
+      font-size: vw(14);
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+
+      &:not(:last-of-type) {
+        margin-bottom: 6px;
+      }
+
+      &::before {
+        margin-right: 2px;
+        content: "・";
+      }
+    }
+  }
+
+  & ol {
+    margin: 32px 0;
+    counter-reset: num;
+
+    & li {
+      font-size: vw(14);
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+
+      &:not(:last-of-type) {
+        margin-bottom: 6px;
+      }
+
+      &::before {
+        margin-right: 6px;
+        content: counter(num);
+        counter-increment: num;
+      }
+    }
+  }
+
+  & .wp-block-quote {
+    margin: 32px 0;
+
+    & p {
+      padding: 38px;
+      margin: 0;
+      font-size: vw(12);
+      line-height: 2;
+      letter-spacing: 0.05em;
+      background-color: #e9e2da;
+    }
+  }
+
+  & p {
+    margin: 32px 0;
+    font-size: vw(16);
+    line-height: 1.8;
+    letter-spacing: 0.025em;
+  }
+
+  & a {
+    border-bottom: solid 1px vars.$color-white; // Use the namespace
+  }
+
+  & a[target="_blank"] {
+    border-bottom: solid 1px vars.$color-white; // Use the namespace
+
+    &::after {
+      display: inline-block;
+      width: vw(10);
+      height: vw(12);
+      margin: 0 0 0 6px;
+      content: "";
+
+      // background: url(#{$base-dir} + "assets/images/icon-blank.svg") no-repeat center / cover; // <- this is causing vite to crash, debug later.
+    }
+  }
+}

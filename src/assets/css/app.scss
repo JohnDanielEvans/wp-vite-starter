@@ -1,0 +1,16 @@
+// Loading Base Styles
+@use "./base/variables";
+@use "./base/functions";
+@use "./base/mixins";
+@use "./base/shared";
+@use "./base/destyle";
+@use "./base/global";
+@use "./base/editor";
+@use "./base/utility";
+
+// Load parts
+@use "./parts/index" as parts;
+
+// Load page styles
+@use "./pages/index" as pages;
+@import "animate.css/animate.min.css";

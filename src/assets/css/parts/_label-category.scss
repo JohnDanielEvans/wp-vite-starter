@@ -1,0 +1,44 @@
+@use "../base/variables" as vars;
+
+.label-category {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+
+  &::before {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    content: "";
+    background-color: vars.$color-green; // Default color
+    border-radius: 50%;
+  }
+}
+
+// Category-specific colors using modern palette
+.label-category[data-slug="frontend"]::before {
+  background-color: vars.$color-green;
+}
+
+.label-category[data-slug="backend"]::before {
+  background-color: vars.$color-teal;
+}
+
+.label-category[data-slug="programming"]::before {
+  background-color: vars.$color-blue;
+}
+
+// SmartApp/SmartAI/Service categories
+.label-category[data-slug="smartapp"]::before {
+  background-color: vars.$color-green;
+}
+
+.label-category[data-slug="smartai"]::before {
+  background-color: vars.$color-teal;
+}
+
+.label-category[data-slug="service"]::before {
+  background-color: vars.$color-blue;
+}

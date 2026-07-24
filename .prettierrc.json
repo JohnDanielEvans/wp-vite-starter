@@ -1,0 +1,6 @@
+{
+  "arrowParens": "always",
+  "printWidth": 1000,
+  "parser": "php",
+  "plugins": ["@prettier/plugin-php"]
+}

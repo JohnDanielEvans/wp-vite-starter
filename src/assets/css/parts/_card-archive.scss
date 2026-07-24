@@ -1,0 +1,37 @@
+@use "../base/mixins" as mixins; // Import mixins with a namespace
+@use "../base/variables" as vars; // Import variables with a namespace
+
+.card-archive {
+  position: relative;
+
+  @include mixins.hover {
+    & .card-archive__thumbnail img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.card-archive__thumbnail {
+  position: relative;
+  height: vw(220);
+  overflow: hidden;
+
+  & img {
+    height: 100%;
+    object-fit: cover;
+    transition: transform vars.$duration-full vars.$easing-transform; // Use the namespace
+  }
+}
+
+.card-archive__category {
+  margin: 24px 0 0;
+}
+
+.card-archive__title {
+  margin: 18px 0 0;
+  font-size: vw(17);
+  font-weight: bold;
+  line-height: 1.5;
+
+  @include mixins.line-clamp(3);
+}

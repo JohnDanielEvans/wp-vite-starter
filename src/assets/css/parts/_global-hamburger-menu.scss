@@ -1,0 +1,139 @@
+@use "../base/variables" as vars;
+
+// FOUC Prevention: menu stays fully hidden until JS is active
+html.no-js body .global-hamburger-menu {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+.global-hamburger-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  display: flex !important;
+  visibility: hidden;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  padding: vars.$space-8 vars.$space-5;
+  pointer-events: none;
+  
+  // Frosted glass background
+  background: rgba(vars.$color-darkest-blue, 0.95);
+  opacity: 0;
+  backdrop-filter: blur(30px);
+  transition: all 0.4s vars.$easing-smooth;
+
+  // Gradient accent
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 200px;
+    height: 4px;
+    content: "";
+    background: vars.$gradient-brand;
+    border-radius: 0 0 4px 4px;
+    opacity: 0;
+    transform: translateX(-50%);
+    transition: opacity 0.3s 0.2s;
+  }
+
+  .logo-mobile {
+    max-width: 280px;
+    margin-bottom: vars.$space-7;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.4s vars.$easing-smooth;
+    transition-delay: 0.1s;
+  }
+
+  .consult-btn {
+    display: block !important;
+    margin-top: vars.$space-6;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s vars.$easing-smooth;
+    transition-delay: 0.4s;
+  }
+
+  .menu {
+    flex-direction: column;
+    gap: vars.$space-2;
+    padding: 0;
+    list-style: none;
+
+    li {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s vars.$easing-smooth;
+      
+      @for $i from 1 through 6 {
+        &:nth-child(#{$i}) {
+          transition-delay: #{0.15 + ($i * 0.05)}s;
+        }
+      }
+    }
+
+    a {
+      display: block;
+      padding: vars.$space-3 vars.$space-5;
+      font-family: vars.$font-display;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: vars.$color-white;
+      text-align: center;
+      border-radius: vars.$radius-md;
+      transition: all vars.$duration-short vars.$easing-smooth;
+
+      &:hover {
+        color: vars.$color-green;
+        background: rgba(vars.$color-green, 0.1);
+      }
+    }
+  }
+
+  .menu-primary-container {
+    margin: 0 auto !important;
+
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+// Open state
+.is-hamburger-menu-open .global-hamburger-menu {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+
+  &::before {
+    opacity: 1;
+  }
+
+  .logo-mobile {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .menu li {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .consult-btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.global-hamburger-menu__item:not(:first-of-type) {
+  margin: vars.$space-3 0 0;
+}

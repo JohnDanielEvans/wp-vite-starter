@@ -1,0 +1,65 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - prod-live
+
+env:
+  # Theme directory name on the server. Change this per project.
+  THEME_SLUG: wp-vite-starter
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 💻 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📅 Install dependencies
+        run: npm ci && npm rebuild --arch=x64 --platform=linux sharp
+
+      - name: 🧼 Lint styles
+        run: npx stylelint "src/assets/**/*.{scss,css}" --allow-empty-input
+
+      - name: 🏗 Build and package theme
+        run: npm run build:prod
+
+      - name: 🔑 Setup SSH key
+        run: echo "$PRIVATE_KEY" | base64 --decode > ./deploy_key && chmod 600 ./deploy_key
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+
+      - name: 🧾 Pin the host key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: 🛠 Ensure remote theme folder exists
+        run: |
+          ssh -i ./deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "mkdir -p '${{ secrets.SSH_PATH }}/wp-content/themes/$THEME_SLUG'"
+
+      - name: 🔐 Fix permissions before rsync
+        run: |
+          ssh -i ./deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "chmod -R u+w '${{ secrets.SSH_PATH }}/wp-content/themes/$THEME_SLUG' || true"
+
+      - name: 🚀 Deploy built theme
+        run: |
+          rsync -rlvz --no-owner --no-group --no-perms --delete --no-times --omit-dir-times \
+            -e 'ssh -i ./deploy_key' \
+            "./deploy/$THEME_SLUG/" \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PATH }}/wp-content/themes/$THEME_SLUG/
+
+      - name: 🧹 Remove deploy key
+        if: always()
+        run: rm -f ./deploy_key

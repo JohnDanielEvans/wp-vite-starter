@@ -1,0 +1,195 @@
+@use "../base/variables" as vars;
+
+.global-footer {
+  position: relative;
+  color: vars.$color-off-white;
+  text-align: left;
+  background: vars.$color-surface-dark;
+  
+  // Gradient accent line at top
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 1px;
+    content: "";
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(vars.$color-green, 0.5),
+      rgba(vars.$color-teal, 0.5),
+      rgba(vars.$color-blue, 0.5),
+      transparent
+    );
+  }
+
+  // Typography
+  h6 {
+    // Subtle underline accent
+    position: relative;
+    display: inline-block;
+    margin-bottom: vars.$space-4;
+    font-family: vars.$font-primary;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: vars.$color-white;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+    
+    &::after {
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 24px;
+      height: 2px;
+      content: "";
+      background: vars.$gradient-brand;
+      border-radius: 1px;
+    }
+  }
+
+  p {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: rgba(vars.$color-off-white, 0.7);
+  }
+
+  a {
+    font-size: 0.875rem;
+    color: rgba(vars.$color-off-white, 0.7);
+    text-decoration: none;
+    transition: all vars.$duration-short vars.$easing-smooth;
+    
+    &:hover {
+      color: vars.$color-green;
+    }
+  }
+
+  li {
+    margin-bottom: vars.$space-2;
+    white-space: nowrap;
+    
+    a {
+      display: inline-flex;
+      gap: vars.$space-2;
+      align-items: center;
+      
+      &::before {
+        font-size: 1rem;
+        color: vars.$color-green;
+        content: "›";
+        opacity: 0;
+        transform: translateX(-4px);
+        transition: all vars.$duration-short vars.$easing-smooth;
+      }
+      
+      &:hover {
+        transform: translateX(4px);
+        
+        &::before {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    }
+  }
+
+  // Partner strip
+  .partner-strip {
+    padding: vars.$space-4;
+    text-align: center;
+    background: rgb(0 0 0 / 30%);
+    border-bottom: 1px solid rgb(255 255 255 / 5%);
+
+    p {
+      margin-bottom: 0;
+      font-size: 0.9375rem;
+      color: rgba(vars.$color-off-white, 0.8);
+    }
+
+    a {
+      font-size: inherit;
+      font-weight: 500;
+      color: vars.$color-white;
+      
+      &:hover {
+        color: vars.$color-green;
+      }
+    }
+  }
+
+  // Main footer content
+  .footer-container {
+    max-width: 1400px;
+    padding: vars.$space-8 vars.$space-5;
+    margin: 0 auto;
+  }
+
+  .row {
+    @media (width <= 768px) {
+      gap: vars.$space-6;
+    }
+  }
+
+  // Divider
+  .footer-break {
+    max-width: 1400px;
+    margin: 0 auto;
+    border: none;
+    border-top: 1px solid rgba(vars.$color-off-white, 0.1);
+  }
+
+  // Bottom bar
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: vars.$space-4;
+    align-items: center;
+    justify-content: center;
+    max-width: 1400px;
+    padding: vars.$space-5;
+    margin: 0 auto;
+
+    .copyright {
+      margin: 0;
+      font-size: 0.8125rem;
+      color: vars.$color-muted;
+    }
+
+    .last-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: vars.$space-4;
+
+      a, span {
+        padding: 0;
+        font-size: 0.8125rem;
+        color: vars.$color-muted;
+
+        &:hover {
+          color: vars.$color-off-white;
+        }
+      }
+    }
+
+    @media (width <= 768px) {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  // Responsive adjustments
+  @media only screen and (width <= 991px) {
+    h6 {
+      margin-top: vars.$space-4;
+      font-size: 0.875rem;
+    }
+    
+    p, a, li {
+      font-size: 0.9375rem;
+    }
+  }
+}
+
