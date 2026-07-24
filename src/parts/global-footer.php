@@ -37,18 +37,24 @@
 
 <?php wp_footer(); ?>
 
+<!-- Endpoint + nonce for the AJAX helpers in functions/ajax.php.
+     Emitted in every environment: scoping this to local dev leaves
+     window.ajax_object undefined in production, where the endpoint is
+     precisely what the built bundles need. -->
+<script>
+  window.ajax_object = {
+    ajaxurl: "<?php echo esc_url(admin_url("admin-ajax.php")); ?>",
+    nonce: "<?php echo esc_js(wp_create_nonce("wpvs_load_more")); ?>"
+  };
+</script>
+
 <?php if (defined("IS_TYPE") && IS_TYPE === "local"): ?>
   <!-- Local dev: Vite handles HMR -->
   <script type="module" src="http://localhost:3030/@vite/client"></script>
   <script type="module" src="http://localhost:3030/src/assets/app.js"></script>
   <?php if (is_front_page()): ?>
-    <script type="module" src="http://localhost:3030/src/assets/front-page.js"></script>
+    <script type="module" src="http://localhost:3030/src/assets/js/front-page.js"></script>
   <?php endif; ?>
-  <script>
-    window.ajax_object = {
-      ajaxurl: "<?php echo admin_url("admin-ajax.php"); ?>"
-    };
-  </script>
 <?php else: ?>
   <!-- Production: versioned bundles -->
   <script type="module" src="<?= vite_src_js("app.js") ?>" defer></script>

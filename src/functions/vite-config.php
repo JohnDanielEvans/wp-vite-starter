@@ -75,7 +75,12 @@ function vite_src_static($name)
 }
 
 /**
- * Return image path (auto-convert extensions in prod).
+ * Return an image path from src/assets/images/.
+ *
+ * With no $extension this returns the ORIGINAL file. That matters: it is the
+ * value used for the <img> fallback inside <picture>, which has to be a format
+ * every browser can decode. Pass "webp" or "avif" explicitly to get a converted
+ * variant for a <source> tag.
  */
 function vite_src_images($name, $extension = null)
 {
@@ -83,11 +88,8 @@ function vite_src_images($name, $extension = null)
         return "http://localhost:3030/src/assets/images/" . ltrim($name, "/");
     }
 
-    // Convert to .webp or .avif if requested
     if ($extension === "webp" || $extension === "avif") {
-        $name = preg_replace("/\.(jpg|jpeg|png)/", "." . $extension, $name);
-    } else {
-        $name = preg_replace("/\.(jpg|jpeg|png)/", ".webp", $name);
+        $name = preg_replace('/\.(jpe?g|png)$/i', "." . $extension, $name);
     }
 
     return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . get_theme_version();

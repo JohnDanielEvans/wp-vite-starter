@@ -24,7 +24,7 @@
       <nav aria-label="Primary">
           <a class="logo" href="<?php echo home_url("/"); ?>"><?php get_template_part("./parts/picture", null, [
     "images" => [
-        "src" => vite_image("logo.svg"),
+        "src" => "logo.svg",
         "width" => "212",
         "height" => "64",
         "alt" => "",

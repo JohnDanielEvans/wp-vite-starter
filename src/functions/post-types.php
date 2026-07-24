@@ -1,30 +1,38 @@
 <?php
 /**
  * Custom Post Types
+ *
+ * Registers the "works" post type and its "works-category" taxonomy, which the
+ * bundled archive-works.php, single-works.php and taxonomy-works-category.php
+ * templates render. Treat this as the worked example: copy the shape, rename
+ * the slugs, and add matching templates.
+ *
+ * Rewrite rules are cached, so flush after changing anything here:
+ *   npm run wp:env run cli 'wp rewrite flush --hard'
  */
 
 function wpvs_register_post_types()
 {
-    register_post_type("products", [
-        "label" => "Products",
+    register_post_type("works", [
+        "label" => "Works",
         "labels" => [
-            "name" => "Products",
-            "singular_name" => "Product",
+            "name" => "Works",
+            "singular_name" => "Work",
             "add_new" => "Add New",
-            "add_new_item" => "Add New Product",
-            "edit_item" => "Edit Product",
-            "new_item" => "New Product",
-            "view_item" => "View Product",
-            "search_items" => "Search Products",
-            "not_found" => "No products found",
-            "not_found_in_trash" => "No products found in Trash",
+            "add_new_item" => "Add New Work",
+            "edit_item" => "Edit Work",
+            "new_item" => "New Work",
+            "view_item" => "View Work",
+            "search_items" => "Search Works",
+            "not_found" => "No works found",
+            "not_found_in_trash" => "No works found in Trash",
         ],
         "public" => true,
-        "has_archive" => false,
+        "has_archive" => true,
         "show_in_rest" => true,
-        "supports" => ["title", "editor", "thumbnail", "page-attributes"],
-        "menu_icon" => "dashicons-store",
-        "rewrite" => ["slug" => "products"],
+        "supports" => ["title", "editor", "thumbnail", "excerpt", "page-attributes"],
+        "menu_icon" => "dashicons-portfolio",
+        "rewrite" => ["slug" => "works"],
         "show_in_nav_menus" => true,
     ]);
 }
@@ -33,11 +41,11 @@ add_action("init", "wpvs_register_post_types");
 
 function wpvs_register_taxonomies()
 {
-    register_taxonomy("product_category", "products", [
-        "label" => "Product Categories",
+    register_taxonomy("works-category", "works", [
+        "label" => "Work Categories",
         "labels" => [
-            "name" => "Product Categories",
-            "singular_name" => "Product Category",
+            "name" => "Work Categories",
+            "singular_name" => "Work Category",
             "search_items" => "Search Categories",
             "all_items" => "All Categories",
             "edit_item" => "Edit Category",
@@ -50,7 +58,7 @@ function wpvs_register_taxonomies()
         "public" => true,
         "show_in_rest" => true,
         "show_admin_column" => true,
-        "rewrite" => ["slug" => "product-category"],
+        "rewrite" => ["slug" => "works-category"],
     ]);
 }
 

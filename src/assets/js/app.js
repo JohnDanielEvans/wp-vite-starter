@@ -2,6 +2,7 @@ import { anchorLink } from "./modules/anchor-link";
 import { tab } from "./modules/tab";
 import { hamburgerMenu } from "./modules/hamburger-menu";
 import { accordion } from "./modules/accordion";
+import { loadMore } from "./modules/load-more";
 import { viewportFix, viewportSize } from "./utility/viewport";
 import 'aos/dist/aos.css';
 import 'animate.css';
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   anchorLink();
   tab();
   accordion();
+  loadMore();
 
   // Initialize Rellax for parallax effects
   if (document.querySelector(".rellax")) {

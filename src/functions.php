@@ -8,15 +8,6 @@ require_once get_theme_file_path("./functions/pagination.php");
 require_once get_theme_file_path("./functions/ajax.php");
 require_once get_theme_file_path("./functions/post-types.php");
 
-function vite_image($filename)
-{
-    if (IS_TYPE === "local") {
-        return "http://localhost:3030/static/" . ltrim($filename, "/");
-    }
-
-    return get_template_directory_uri() . "/assets/images/" . ltrim($filename, "/");
-}
-
 function enqueue_custom_scripts()
 {
     // Skip all enqueues during local dev (Vite handles it)

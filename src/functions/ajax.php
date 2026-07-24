@@ -1,54 +1,64 @@
 <?php
-function load_more_products()
+/**
+ * AJAX endpoints.
+ *
+ * Worked example: paginated "load more" for the works archive. Returns JSON so
+ * the client knows whether another page exists, rather than guessing from an
+ * empty response.
+ *
+ * Client side: src/assets/js/modules/load-more.js
+ */
+
+function wpvs_load_more_works()
 {
-    $paged = isset($_POST["page"]) ? intval($_POST["page"]) : 1;
+    check_ajax_referer("wpvs_load_more", "nonce");
 
-    $args = [
-        "post_type" => "products",
-        "posts_per_page" => 5,
+    $paged = isset($_POST["page"]) ? max(1, intval($_POST["page"])) : 1;
+    $per_page = 5;
+
+    $query = new WP_Query([
+        "post_type" => "works",
+        "post_status" => "publish",
+        "posts_per_page" => $per_page,
         "paged" => $paged,
-    ];
+        "ignore_sticky_posts" => true,
+    ]);
 
-    $query = new WP_Query($args);
+    ob_start();
 
-    if ($query->have_posts()):
-        while ($query->have_posts()):
-            $query->the_post(); ?>
-            <article class="archive-product__card archive-product__card--horizontal" data-aos="fade-up" data-aos-delay="100" data-aos-duration="300">
-                <a href="<?php the_permalink(); ?>" class="archive-product__card-link">
-                    <?php if (has_post_thumbnail()): ?>
-                        <div class="archive-product__card-thumb">
-                            <?php the_post_thumbnail("large"); ?>
-                        </div>
+    while ($query->have_posts()):
+        $query->the_post();
+
+        // get_the_category() only ever returns the built-in "category"
+        // taxonomy, so it silently returns nothing for a custom post type.
+        // get_the_terms() against the registered taxonomy is what works here.
+        $terms = get_the_terms(get_the_ID(), "works-category");
+        ?>
+        <article class="card-archive" data-aos="fade-up" data-aos-duration="300">
+            <a href="<?php the_permalink(); ?>" class="card-archive__link">
+                <?php if (has_post_thumbnail()): ?>
+                    <div class="card-archive__thumb"><?php the_post_thumbnail("large"); ?></div>
+                <?php endif; ?>
+                <div class="card-archive__content">
+                    <h2 class="card-archive__title"><?php the_title(); ?></h2>
+                    <div class="card-archive__excerpt"><?php the_excerpt(); ?></div>
+                    <?php if (!empty($terms) && !is_wp_error($terms)): ?>
+                        <p class="card-archive__meta"><?= esc_html($terms[0]->name) ?></p>
                     <?php endif; ?>
-                    <div class="archive-product__card-content">
-                        <h2 class="archive-product__card-title"><?php the_title(); ?></h2>
-                        <div class="archive-product__card-excerpt">
-                            <p><?php echo wp_kses_post(get_field("summary")); ?></p>
-                        </div>
-                        <p class="archive-product__card-meta">
-                            <?php
-                            $cats = get_the_category();
-                            if (!empty($cats)) {
-                                echo "<strong>Category:</strong> " . esc_html($cats[0]->name);
-                            }
-                            ?>
-                        </p>
-                        <span class="archive-product__card-arrow">↗</span>
-                    </div>
-                </a>
-            </article>
+                </div>
+            </a>
+        </article>
         <?php
-        endwhile;
-        wp_reset_postdata();
-    else:
-         ?>
-        <p>No more products found.</p>
-    <?php
-    endif;
+    endwhile;
 
-    wp_die();
+    wp_reset_postdata();
+
+    wp_send_json_success([
+        "html" => ob_get_clean(),
+        "page" => $paged,
+        "has_more" => $paged < (int) $query->max_num_pages,
+    ]);
 }
 
-add_action("wp_ajax_load_more_products", "load_more_products");
-add_action("wp_ajax_nopriv_load_more_products", "load_more_products");
+add_action("wp_ajax_wpvs_load_more_works", "wpvs_load_more_works");
+add_action("wp_ajax_nopriv_wpvs_load_more_works", "wpvs_load_more_works");

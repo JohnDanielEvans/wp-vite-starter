@@ -101,7 +101,8 @@ Two are included; pick one.
 ## Conventions
 
 - **Edit `src/` only.** `dist/` and `deploy/` are build output and are gitignored.
-- **All images go in `src/assets/images/`.** The build emits `.webp` and `.avif` alongside the original.
+- **All images go in `src/assets/images/`.** The build emits `.webp` and `.avif` alongside the original. Render them through `parts/picture.php`, which wraps them in a `<picture>` with both variants and an original-format fallback.
+- **Site chrome — favicon, touch icon — goes in `public/static/`.** `copy-theme.sh` flattens that into `assets/images/` at build time, which is where `vite_src_static()` resolves to in a built theme.
 - **Never commit database dumps.** `sql/` is gitignored: WordPress dumps carry `wp_users` rows (emails, password hashes) and plugin API keys in `wp_options`.
 - Adding a page-level JS entry point means registering it in `vite.config.js` under `build.rollupOptions.input` *and* emitting the tag in `parts/global-footer.php`.
 

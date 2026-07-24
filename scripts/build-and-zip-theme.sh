@@ -15,16 +15,11 @@ rm -rf deploy "$THEME_SLUG.zip"
 # Run production build with all steps
 npm run build
 
-# Assemble the theme folder
+# Assemble the theme folder.
+# copy-theme.sh handles placing public/static/ into assets/images/, so there is
+# no separate static copy step here.
 echo "📦 Packaging theme..."
 bash "$(dirname "$0")/copy-theme.sh"
-
-# Ensure static images are in place
-if [ -d public/static ]; then
-    echo "📷 Copying static images..."
-    mkdir -p "deploy/$THEME_SLUG/assets/images"
-    cp -R public/static/* "deploy/$THEME_SLUG/assets/images/"
-fi
 
 # Create zip file for upload
 echo "🗜️ Creating zip file..."
