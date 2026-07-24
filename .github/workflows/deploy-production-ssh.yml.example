@@ -1,0 +1,43 @@
+# Alternative deploy model: SSH in and let the server build itself.
+#
+# Rename to deploy-production-ssh.yml (and disable deploy-production.yml) if you
+# prefer this over rsyncing a CI-built artifact.
+#
+# Trade-offs vs. the rsync model:
+#   + The server is the single source of truth; no "built on a different Node
+#     version than production runs" drift.
+#   + wp-cli runs natively, so theme activation and rewrite flushes are trivial.
+#   - Requires Node, npm and a full git checkout on the server.
+#   - Build failures happen on production, mid-deploy, rather than in CI.
+#   - Slower, and the site is briefly mid-build.
+#
+# Requires scripts/server-deploy.sh to be present in the checkout on the server.
+
+name: Deploy to Production (server-side build)
+
+on:
+  push:
+    branches:
+      - prod-live
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+            export SITE_PATH='${{ secrets.SSH_PATH }}'
+            export THEME_SLUG='wp-vite-starter'
+            export DEPLOY_BRANCH='prod-live'
+            cd "$SITE_PATH"
+            bash scripts/server-deploy.sh

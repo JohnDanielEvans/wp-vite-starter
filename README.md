@@ -13,7 +13,10 @@ A WordPress starter theme wired to a modern local-development harness: [`@wordpr
 | JPEG/PNG → WebP + AVIF conversion | `convert.images.mjs` |
 | Theme packaging + zip | `scripts/copy-theme.sh`, `scripts/build-and-zip-theme.sh` |
 | Staging/production deploy over rsync+SSH | `.github/workflows/` |
+| Server-side build deploy (alternative model) | `scripts/server-deploy.sh`, `.github/workflows/*.yml.example` |
+| Theme-level asset serving rules | `src/.htaccess` |
 | Lint + format on commit | `.husky/`, `eslint.config.mjs`, `.stylelintrc.json`, `.markuplintrc.json`, `.prettierrc.json` |
+| Claude Code permission allowlist | `.claude/settings.json` |
 
 ## Quick start
 
@@ -81,7 +84,19 @@ base64 -i ~/.ssh/deploy_key | pbcopy
 ssh-keyscan -H your-server.example.com
 ```
 
-Only the theme directory is synced. Plugins and uploads are deliberately not deployed from CI — they are site content and belong to the server, not the repo.
+Only the theme directory is synced by default. Uploads are never deployed from CI — they are site content and belong to the server. Plugin sync is opt-in: set the repository variable `SYNC_PLUGINS=true` and vendor the plugins into `./plugins` (also removing it from `.gitignore`). There is deliberately no `--delete` on that sync, so it cannot wipe plugins installed through wp-admin.
+
+### Deploy models
+
+Two are included; pick one.
+
+**rsync from CI** (`deploy-production.yml`, `deploy-staging.yml`, active by default) — CI builds the theme and rsyncs the finished artifact. The server needs nothing but SSH.
+
+**Server-side build** (`deploy-production-ssh.yml.example` + `scripts/server-deploy.sh`) — CI SSHes in and the server pulls, builds, and activates the theme with wp-cli. Requires Node and a full git checkout on the server, and build failures land on production mid-deploy. Rename the `.example` file to enable it.
+
+### Managed-host permission recovery
+
+`deploy-production.yml` contains a step that moves the theme directory aside if the deploy user cannot write to it. This is not defensive boilerplate — on managed hosts (SpinupWP and similar), a plugin or theme update performed through wp-admin leaves `wp-content/themes/<slug>` owned by the web user. The deploy user then has no write access and no sudo, and every subsequent rsync fails. Moving the directory to `<slug>.old-<timestamp>` and recreating it is the only recovery available without root. Those `.old-*` directories accumulate; prune them periodically.
 
 ## Conventions
 

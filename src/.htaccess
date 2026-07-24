@@ -1,0 +1,9 @@
+# Enable SVG support
+AddType image/svg+xml svg svgz
+AddEncoding gzip svgz
+
+# Allow access to theme assets
+<FilesMatch "\.(svg|png|jpg|jpeg|gif|webp|avif|ico|css|js|woff|woff2)$">
+    Require all granted
+</FilesMatch>
+

@@ -43,10 +43,20 @@ jobs:
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-      - name: 🛠 Ensure remote theme folder exists
+      # Managed WordPress hosts often leave the theme dir owned by the web user
+      # (php-fpm, www-data) after a wp-admin plugin/theme update. The deploy
+      # user then cannot write into it and has no sudo. Moving it aside is the
+      # only recovery available without root; the next step recreates it.
+      - name: 🔧 Reclaim theme dir if owned by another user (no sudo)
         run: |
-          ssh -i ./deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
-            "mkdir -p '${{ secrets.SSH_PATH }}/wp-content/themes/$THEME_SLUG'"
+          ssh -i ./deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
+            THEME="${{ secrets.SSH_PATH }}/wp-content/themes/'"$THEME_SLUG"'"
+            if [ -e "$THEME" ] && [ ! -w "$THEME" ]; then
+              echo "Theme dir not writable by $(whoami); moving aside and recreating"
+              mv "$THEME" "${THEME}.old-$(date +%s)"
+            fi
+            mkdir -p "$THEME"
+          '
 
       - name: 🔐 Fix permissions before rsync
         run: |
@@ -59,6 +69,22 @@ jobs:
             -e 'ssh -i ./deploy_key' \
             "./deploy/$THEME_SLUG/" \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PATH }}/wp-content/themes/$THEME_SLUG/
+
+      # Opt-in: set repository variable SYNC_PLUGINS=true to enable.
+      # Only meaningful if you actually vendor plugins into ./plugins and remove
+      # it from .gitignore. Note there is no --delete here: a stray --delete
+      # against wp-content/plugins would wipe every plugin installed via wp-admin.
+      - name: 🚂 Sync vendored plugins
+        if: vars.SYNC_PLUGINS == 'true'
+        run: |
+          if [ -d ./plugins ] && [ -n "$(ls -A ./plugins 2>/dev/null | grep -v '^\.gitkeep$')" ]; then
+            rsync -rlvz --no-owner --no-group --no-perms \
+              -e 'ssh -i ./deploy_key' \
+              ./plugins/ \
+              ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PATH }}/wp-content/plugins/
+          else
+            echo "No vendored plugins to sync — skipping"
+          fi
 
       - name: 🧹 Remove deploy key
         if: always()
