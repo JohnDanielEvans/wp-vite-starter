@@ -10,7 +10,28 @@ env:
   THEME_SLUG: wp-vite-starter
 
 jobs:
+  # See the equivalent note in deploy-production.yml: this keeps a fresh fork
+  # from emailing its owner a failed deploy they never set up.
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: 🔍 Check deploy secrets are configured
+        id: check
+        env:
+          SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+        run: |
+          if [ -n "$SSH_HOST" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Staging deploy secrets are not configured — skipping deploy. See the README for the required secrets."
+          fi
+
   build-and-deploy:
+    needs: preflight
+    if: needs.preflight.outputs.configured == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -20,11 +41,11 @@ jobs:
       - name: 💻 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: 📅 Install dependencies
-        run: npm ci && npm rebuild --arch=x64 --platform=linux sharp
+        run: npm ci
 
       - name: 🧼 Lint styles
         run: npx stylelint "src/assets/**/*.{scss,css}" --allow-empty-input
