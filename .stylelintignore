@@ -1,11 +1,9 @@
-**/node_modules/**
-**/vendor/**
-**/dist/**
-**/public/**
-**/src/assets/scss/vendors/**
-**/src/assets/scss/utilities/_animations.scss
-**/animate.css
+node_modules/
+dist/
 deploy/
-**/deploy/
-deploy/**/*.scss
-deploy/**/*.css
+public/
+plugins/
+uploads/
+
+# Vendored reset — not ours to lint or reformat.
+src/assets/css/base/_destyle.scss

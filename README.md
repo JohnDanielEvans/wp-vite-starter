@@ -1,22 +1,18 @@
 # WP Vite Starter
 
-A WordPress starter theme wired to a modern local-development harness: [`@wordpress/env`](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) for a Dockerized WordPress, Vite for HMR and bundling, Sharp for image optimization, and GitHub Actions for rsync deployment.
+A WordPress starter theme with a modern front-end workflow: Docker-backed
+WordPress, Vite with hot reload, automatic WebP/AVIF images, and one-push
+deploys.
 
-## What you get
+Build a classic PHP theme, but with the tooling you'd expect from any other
+2020s front-end project.
 
-| Piece | File(s) |
-| --- | --- |
-| Dockerized local WordPress on `:8000` | `.wp-env.json` |
-| Vite dev server + BrowserSync proxy on `:3030` | `vite.config.mjs` |
-| PHP↔Vite asset bridge (dev URLs vs. versioned build URLs) | `src/functions/vite-config.php` |
-| Cache-busting build hash | `scripts/generate-version.mjs` |
-| JPEG/PNG → WebP + AVIF conversion | `convert.images.mjs` |
-| Theme packaging + zip | `scripts/copy-theme.sh`, `scripts/build-and-zip-theme.sh` |
-| Staging/production deploy over rsync+SSH | `.github/workflows/` |
-| Server-side build deploy (alternative model) | `scripts/server-deploy.sh`, `.github/workflows/*.yml.example` |
-| Theme-level asset serving rules | `src/.htaccess` |
-| Lint + format on commit | `.husky/`, `eslint.config.mjs`, `.stylelintrc.json`, `.markuplintrc.json`, `.prettierrc.json` |
-| Grouped dependency updates | `.github/dependabot.yml` |
+---
+
+## Requirements
+
+- **Node 20.11+**
+- **Docker** (for the local WordPress)
 
 ## Quick start
 
@@ -26,51 +22,113 @@ npm run wp:start
 npm run dev
 ```
 
-- WordPress admin: http://localhost:8000/wp-admin (`admin` / `password`)
-- Vite dev server: http://localhost:3030
-- BrowserSync proxy: http://localhost:3031
+Then open **http://localhost:3030** and activate **WP Vite Starter** under
+Appearance → Themes.
 
-Activate **WP Vite Starter** under Appearance → Themes. The theme is mounted from `./src/`, so edits are live.
+| | |
+| --- | --- |
+| Site (with hot reload) | http://localhost:3030 |
+| WordPress admin | http://localhost:8000/wp-admin — `admin` / `password` |
+| BrowserSync proxy | http://localhost:3031 |
 
-Stop with `npm run wp:destroy`.
+The theme runs straight from `src/`, so your edits appear immediately. Run
+`npm run wp:destroy` when you're finished.
 
-## How the Vite bridge works
+## Everyday commands
 
-`wp_get_environment_type()` drives the `IS_TYPE` constant (`src/functions/variables.php`). Everything downstream branches on it:
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server with hot reload |
+| `npm run build:prod` | Full production build into `deploy/` |
+| `npm run deploy` | Production build, plus an installable `.zip` |
+| `npm run lint:check` | Lint markup, styles, and scripts |
+| `npm run lint:fix` | Fix what can be fixed automatically |
+| `npm run format` | Run Prettier over `src/` |
+| `npm run wp:start` / `wp:destroy` | Start / tear down local WordPress |
+| `npm run db:export` / `db:import` | Save and restore the local database |
 
-- **Local** — `parts/global-footer.php` emits `<script type="module">` tags pointing at `http://localhost:3030`, so you get HMR against real WordPress output. No PHP enqueues run.
-- **Built** — `wpvs_vite_src_js()` / `wpvs_vite_src_css()` return `/assets/…?ver=<hash>`, where the hash comes from `version.json` written at build time.
+## Project layout
 
-`WP_ENVIRONMENT_TYPE` is set to `local` by `.wp-env.json`. On your servers, set it in `wp-config.php`.
-
-## Renaming the theme for a new project
-
-1. `src/style.css` — update the `Theme Name:` / `Author:` / `Text Domain:` header.
-2. `scripts/theme-slug.sh` — change the `THEME_SLUG` default.
-3. `.github/workflows/*.yml` — change the `THEME_SLUG` env value in both files.
-4. `package.json` — change `name`.
-
-Everything that writes to `deploy/` or rsyncs to a server reads `THEME_SLUG`, so those four edits cover it. For a one-off build without editing anything: `THEME_SLUG=my-theme npm run deploy`.
-
-## Build & deploy
-
-```bash
-npm run build:prod
+```
+src/                  The theme itself — this is what gets deployed
+  assets/             SCSS, JS, images, SVG sprites
+  functions/          PHP: post types, AJAX, the Vite bridge
+  parts/              Template partials
+  *.php               Page templates
+public/static/        Favicon and touch icons
+scripts/              Build and packaging
+dist/  deploy/        Build output (gitignored)
 ```
 
-Compiles SCSS, bundles JS, generates WebP/AVIF variants, writes `version.json`, and assembles `deploy/$THEME_SLUG/`. Use `npm run deploy` to also produce an installable zip.
+Edit `src/` only — everything else is generated.
 
-CI deploys on push:
+---
 
-| Branch | Workflow | Target |
-| --- | --- | --- |
-| `staging` | `deploy-staging.yml` | staging host |
-| `prod-live` | `deploy-production.yml` | production host |
+## How it works
 
-### Required repository secrets
+**In development**, `parts/global-footer.php` points `<script type="module">`
+tags at the Vite dev server, so you get hot reload against real WordPress
+output.
 
-Production: `PRIVATE_KEY`, `SSH_USER`, `SSH_HOST`, `SSH_PATH`, `SSH_KNOWN_HOSTS`
-Staging: `STAGING_PRIVATE_KEY`, `STAGING_SSH_USER`, `STAGING_SSH_HOST`, `STAGING_SSH_PATH`, `STAGING_SSH_KNOWN_HOSTS`
+**In a build**, `wpvs_vite_src_js()` and `wpvs_vite_src_css()` return
+`/assets/…?ver=<hash>`, where the hash comes from a `version.json` written at
+build time — so browsers pick up new assets immediately.
+
+The switch between the two is WordPress's own `wp_get_environment_type()`.
+`.wp-env.json` sets it to `local` for you; on a real server, set
+`WP_ENVIRONMENT_TYPE` in `wp-config.php`.
+
+### Images
+
+Drop images in `src/assets/images/`. The build generates `.webp` and `.avif`
+alongside the original, and `parts/picture.php` renders a `<picture>` with all
+three so browsers take the best one they support.
+
+### Plugins
+
+None are installed by default — the theme doesn't need any, since the `works`
+post type and its taxonomy are registered in `src/functions/post-types.php`. Add
+what a project needs to `.wp-env.json`:
+
+```json
+"plugins": ["https://downloads.wordpress.org/plugin/advanced-custom-fields.zip"]
+```
+
+---
+
+## Using it for your own project
+
+Four edits rename the theme everywhere:
+
+1. `src/style.css` — the `Theme Name:` / `Author:` / `Text Domain:` header
+2. `scripts/theme-slug.sh` — the `THEME_SLUG` default
+3. `.github/workflows/*.yml` — the `THEME_SLUG` value in both files
+4. `package.json` — the `name` field
+
+Everything that packages or deploys reads `THEME_SLUG`. For a one-off build
+without editing anything: `THEME_SLUG=my-theme npm run deploy`.
+
+## Deploying
+
+Push to a branch and GitHub Actions builds the theme and rsyncs it over SSH.
+The build happens on the runner, so a broken build fails the workflow and never
+reaches your server.
+
+| Branch | Deploys to |
+| --- | --- |
+| `staging` | staging host |
+| `prod-live` | production host |
+
+Only the theme directory is synced. Uploads are never deployed — they're site
+content and belong to the server.
+
+<details>
+<summary><strong>Setting up the deploy secrets</strong></summary>
+
+Add these under Settings → Secrets and variables → Actions:
+
+**Production** — `PRIVATE_KEY`, `SSH_USER`, `SSH_HOST`, `SSH_PATH`, `SSH_KNOWN_HOSTS`
+**Staging** — the same five, each prefixed `STAGING_`
 
 `PRIVATE_KEY` is a base64-encoded SSH private key:
 
@@ -78,79 +136,95 @@ Staging: `STAGING_PRIVATE_KEY`, `STAGING_SSH_USER`, `STAGING_SSH_HOST`, `STAGING
 base64 -i ~/.ssh/deploy_key | pbcopy
 ```
 
-`SSH_KNOWN_HOSTS` is the server's public host key — the workflows pin it rather than using `StrictHostKeyChecking=no`:
+`SSH_KNOWN_HOSTS` is the server's public host key. The workflows pin it rather
+than disabling host checking:
 
 ```bash
 ssh-keyscan -H your-server.example.com
 ```
 
-Only the theme directory is synced by default. Uploads are never deployed from CI — they are site content and belong to the server. Plugin sync is opt-in: set the repository variable `SYNC_PLUGINS=true` and vendor the plugins into `./plugins` (also removing it from `.gitignore`). There is deliberately no `--delete` on that sync, so it cannot wipe plugins installed through wp-admin.
+Until these exist the deploy job skips itself, so forking this repo won't
+produce failing builds.
 
-### Deploy models
+</details>
 
-Two are included; pick one.
+<details>
+<summary><strong>Deploying plugins too (optional)</strong></summary>
 
-**rsync from CI** (`deploy-production.yml`, `deploy-staging.yml`, active by default) — CI builds the theme and rsyncs the finished artifact. The server needs nothing but SSH.
+Set the repository variable `SYNC_PLUGINS=true` and commit the plugins into
+`./plugins` (removing it from `.gitignore`). That sync deliberately has no
+`--delete`, so it can never wipe plugins installed through wp-admin.
 
-**Server-side build** (`deploy-production-ssh.yml.example` + `scripts/server-deploy.sh`) — CI SSHes in and the server pulls, builds, and activates the theme with wp-cli. Requires Node and a full git checkout on the server, and build failures land on production mid-deploy. Rename the `.example` file to enable it.
+</details>
 
-### Managed-host permission recovery
+<details>
+<summary><strong>If deploys start failing with permission errors</strong></summary>
 
-`deploy-production.yml` contains a step that moves the theme directory aside if the deploy user cannot write to it. This is not defensive boilerplate — on managed hosts (SpinupWP and similar), a plugin or theme update performed through wp-admin leaves `wp-content/themes/<slug>` owned by the web user. The deploy user then has no write access and no sudo, and every subsequent rsync fails. Moving the directory to `<slug>.old-<timestamp>` and recreating it is the only recovery available without root. Those `.old-*` directories accumulate; prune them periodically.
+On managed hosts (SpinupWP and similar), updating a plugin or theme through
+wp-admin leaves `wp-content/themes/<slug>` owned by the web user. The deploy
+user then can't write to it and has no sudo, so every rsync fails.
+
+`deploy-production.yml` handles this by moving the directory to
+`<slug>.old-<timestamp>` and recreating it — the only recovery available without
+root. Those `.old-*` directories build up over time, so prune them occasionally.
+
+</details>
+
+---
 
 ## Conventions
 
-- **Edit `src/` only.** `dist/` and `deploy/` are build output and are gitignored.
-- **All images go in `src/assets/images/`.** The build emits `.webp` and `.avif` alongside the original. Render them through `parts/picture.php`, which wraps them in a `<picture>` with both variants and an original-format fallback.
-- **Site chrome — favicon, touch icon — goes in `public/static/`.** `copy-theme.sh` flattens that into `assets/images/` at build time, which is where `wpvs_vite_src_static()` resolves to in a built theme.
-- **Never commit database dumps.** `sql/` is gitignored: WordPress dumps carry `wp_users` rows (emails, password hashes) and plugin API keys in `wp_options`.
-- Adding a page-level JS entry point means registering it in `vite.config.mjs` under `build.rollupOptions.input` *and* emitting the tag in `parts/global-footer.php`.
-
-## Local database
-
-`.wp-env.json` maps `./sql` into the container, so you can round-trip a database:
-
-```bash
-npm run db:export   # writes sql/wpenv.sql.gz
-npm run db:import   # restores it
-```
-
-Keep those dumps out of version control.
+- **Edit `src/` only.** `dist/` and `deploy/` are build output.
+- **Images go in `src/assets/images/`**, rendered via `parts/picture.php`.
+- **Favicons and touch icons go in `public/static/`**, resolved by
+  `wpvs_vite_src_static()`.
+- **Theme functions are prefixed `wpvs_`** — PHP has one global namespace, and
+  an unprefixed `remove_menus()` will fatal the site the day a plugin declares
+  the same name.
+- **Never commit database dumps.** `sql/` is gitignored: WordPress dumps carry
+  user emails, password hashes, and plugin API keys.
+- **New page-level JS** needs registering in `vite.config.mjs` under
+  `build.rollupOptions.input` *and* a tag in `parts/global-footer.php`.
 
 ## Contributing
 
-Bug fixes, host-compatibility fixes, and documentation are welcome — see
-[CONTRIBUTING.md](CONTRIBUTING.md) for setup and what to run before opening a
-PR. Open an issue first for anything substantial.
+Bug fixes, host-compatibility fixes, and documentation are all welcome — see
+[CONTRIBUTING.md](CONTRIBUTING.md). Open an issue first for anything
+substantial.
 
-## Provenance & credits
+## Credits
 
-This theme is not scaffolded from scratch. Parts of it descend from an
+This theme isn't scaffolded from scratch. Parts of it descend from an
 open-source wp-env + Vite starter theme — Japanese-language, translated during
-adaptation — whose name and URL I no longer have. If you recognise the lineage,
-please open an issue so it can be credited properly here.
+adaptation — whose name and URL I no longer have. **If you recognise the
+lineage, please open an issue so it can be credited properly.**
 
-What came from that lineage, as best I can reconstruct it: the base template
-partial structure, the SCSS layout (`base/` / `parts/` / `pages/`), and the
-shape of the Sharp image-conversion script. The `works` custom post type and the
-Japanese-agency conventions visible in the markup are from the same source.
+<details>
+<summary>What's inherited, what's original, and third-party licenses</summary>
 
-Original work in this repository: the Vite↔PHP asset bridge
+From that lineage, as best I can reconstruct: the template partial structure,
+the SCSS layout (`base/` / `parts/` / `pages/`), and the shape of the Sharp
+image-conversion script. The `works` post type and the agency conventions in the
+markup come from the same source.
+
+Original work here: the Vite↔PHP asset bridge
 (`src/functions/vite-config.php`), the build versioning and cache-busting, the
-theme packaging scripts, and the deployment workflows.
+packaging scripts, and the deployment workflows.
 
-Third-party code that ships in this repo under its own license:
+Third-party code shipped in this repo:
 
 | Component | Source | License |
 | --- | --- | --- |
 | `src/assets/css/base/_destyle.scss` | [destyle.css](https://github.com/nicolas-cusan/destyle.css) v4.0.0 by Nicolas Cusan | MIT |
 
-Runtime dependencies (Bootstrap, GSAP, AOS, Keen-Slider, Rellax) are installed
-via npm and carry their own licenses — GSAP's standard license in particular has
-terms worth reading before commercial use. Only Bootstrap's grid and spacing
-utilities are compiled in; see `src/assets/css/base/_global.scss`.
+Runtime dependencies (Bootstrap, GSAP, AOS, Keen-Slider, Rellax) come from npm
+under their own licenses — GSAP's in particular is worth reading before
+commercial use. Only Bootstrap's grid and spacing utilities are compiled in; see
+`src/assets/css/base/_global.scss`.
+
+</details>
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Applies to the original work in this repository;
-third-party components remain under the licenses listed above.
+MIT — see [LICENSE](LICENSE). Covers the original work here; third-party
+components stay under their own licenses.

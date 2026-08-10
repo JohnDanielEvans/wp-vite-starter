@@ -26,12 +26,9 @@
     ]
   },
   "ignoreFiles": [
-    "node_modules/",
-    "src/assets/css/base/_destyle.scss",
-    "plugins/**/*",
-    "uploads/**/*",
-    "**/animate.css",
-    "**/vendor/**",
-    "**/node_modules/**"
+    "node_modules/**",
+    "plugins/**",
+    "uploads/**",
+    "src/assets/css/base/_destyle.scss"
   ]
 }
