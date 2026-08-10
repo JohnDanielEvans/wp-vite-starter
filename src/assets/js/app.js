@@ -1,12 +1,8 @@
-import { anchorLink } from "./modules/anchor-link";
-import { tab } from "./modules/tab";
 import { hamburgerMenu } from "./modules/hamburger-menu";
-import { accordion } from "./modules/accordion";
 import { loadMore } from "./modules/load-more";
 import { viewportFix, viewportSize } from "./utility/viewport";
 import 'aos/dist/aos.css';
 import AOS from 'aos';
-import Rellax from "rellax";
 
 document.addEventListener("DOMContentLoaded", () => {
   const menu = document.querySelector('.global-hamburger-menu');
@@ -14,19 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     menu.style.removeProperty('display');
   }
   hamburgerMenu();
-  anchorLink();
-  tab();
-  accordion();
   loadMore();
-
-  // Initialize Rellax for parallax effects
-  if (document.querySelector(".rellax")) {
-    new Rellax(".rellax", {
-      speed: -2,
-      vertical: true,
-      horizontal: false,
-    });
-  }
 });
 
 // viewport-related logic on full page load

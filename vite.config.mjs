@@ -11,9 +11,6 @@ import svgSpritePluginCjs from "vite-plugin-svg-sprite-component";
 const svgSpritePlugin = svgSpritePluginCjs.default ?? svgSpritePluginCjs;
 
 export default defineConfig({
-  optimizeDeps: {
-    include: ["rellax", "keen-slider"]
-  },
   publicDir: "public",
   plugins: [
     svgSpritePlugin(),
@@ -46,9 +43,9 @@ export default defineConfig({
     emptyOutDir: true,
     target: "es2018",
     rollupOptions: {
+      // Add a page-level entry here and emit its tag in parts/global-footer.php.
       input: {
         app: path.resolve(import.meta.dirname, `src/assets/app.js`),
-        "front-page": path.resolve(import.meta.dirname, `src/assets/js/front-page.js`),
       },
       output: {
         entryFileNames: `assets/js/[name].js`,

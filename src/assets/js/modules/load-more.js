@@ -14,6 +14,11 @@ export function loadMore() {
 
   if (!button || !list || !window.ajax_object) return;
 
+  // Progressive enhancement: the server renders a normal pager so the archive
+  // is fully navigable without JavaScript. Once this takes over, that pager
+  // would disagree with the growing list, so it goes.
+  document.querySelector(".archive-works__pagination")?.remove();
+
   const action = button.getAttribute("action") || "wpvs_load_more_works";
   let page = 1;
   let busy = false;

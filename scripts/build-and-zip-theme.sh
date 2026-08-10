@@ -12,14 +12,13 @@ echo "🔨 Building $THEME_SLUG for production..."
 # Clean previous deploy folder
 rm -rf deploy "$THEME_SLUG.zip"
 
-# Run production build with all steps
-npm run build
-
-# Assemble the theme folder.
-# copy-theme.sh handles placing public/static/ into assets/images/, so there is
-# no separate static copy step here.
-echo "📦 Packaging theme..."
-bash "$(dirname "$0")/copy-theme.sh"
+# build:prod, not build. `build` stops after vite + press:images, skipping
+# generate-version, so the packaged theme shipped without a version.json at all:
+# wpvs_get_theme_version() then fell back to "1.0.0" forever and the ?ver= query
+# never changed, so browsers kept serving stale CSS and JS after every release.
+# build:prod also runs copy-theme, which assembles deploy/$THEME_SLUG and folds
+# public/static into assets/images.
+npm run build:prod
 
 # Create zip file for upload
 echo "🗜️ Creating zip file..."

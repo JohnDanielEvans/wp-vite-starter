@@ -93,9 +93,6 @@
   },
   "dependencies": {
     "aos": "^2.3.4",
-    "bootstrap": "^5.3.3",
-    "gsap": "^3.12.7",
-    "keen-slider": "^6.8.6",
-    "rellax": "^1.12.1"
+    "bootstrap": "^5.3.3"
   }
 }

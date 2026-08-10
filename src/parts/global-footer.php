@@ -52,16 +52,17 @@
   <!-- Local dev: Vite handles HMR -->
   <script type="module" src="http://localhost:3030/@vite/client"></script>
   <script type="module" src="http://localhost:3030/src/assets/app.js"></script>
-  <?php if (is_front_page()): ?>
-    <script type="module" src="http://localhost:3030/src/assets/js/front-page.js"></script>
-  <?php endif; ?>
 <?php else: ?>
   <!-- Production: versioned bundles -->
   <script type="module" src="<?= wpvs_vite_src_js("app.js") ?>" defer></script>
-  <?php if (is_front_page()): ?>
-    <script type="module" src="<?= wpvs_vite_src_js("front-page.js") ?>"></script>
-  <?php endif; ?>
 <?php endif; ?>
+
+<?php
+// Page-level bundles go in the two branches above, guarded by a template tag
+// and registered under build.rollupOptions.input in vite.config.mjs. Both
+// branches need a tag: the local one points at the dev server, the built one at
+// the versioned file via wpvs_vite_src_js("front-page.js").
+?>
 
 </body>
 </html>

@@ -14,7 +14,7 @@ $pagination = wpvs_get_pagination($pagination_range, $pagination_add_first_and_l
       <div class="about-works__inner">
         <!-- main loop -->
         <?php if (have_posts()): ?>
-          <ul class="archive-works__list">
+          <ul class="archive-works__list" data-load-more-list>
             <?php while (have_posts()):
 
                 the_post();
@@ -45,6 +45,21 @@ $pagination = wpvs_get_pagination($pagination_range, $pagination_add_first_and_l
             endwhile; ?>
           </ul>
         <?php endif; ?>
+        <?php // The AJAX handler queries the whole "works" post type and does not
+        // filter by term, so the button only belongs on the post-type archive.
+        // On a taxonomy archive it would append posts from other categories.
+        if (is_post_type_archive("works") && $wp_query->max_num_pages > 1): ?>
+          <div class="archive-works__load-more">
+            <button type="button" class="archive-works__load-more-btn" data-load-more action="wpvs_load_more_works">
+              <?= esc_html__("Load more", "wp-vite-starter") ?>
+            </button>
+          </div>
+        <?php endif; ?>
+
+        <?php
+// Server-rendered pager. Works without JavaScript, and load-more.js
+// hides it when it takes over so the two controls never disagree.
+?>
         <div class="archive-works__pagination">
           <?php get_template_part("./parts/pagination", null, [
               "pagination" => $pagination,
