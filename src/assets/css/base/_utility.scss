@@ -25,5 +25,9 @@
   overflow: hidden !important;
   white-space: nowrap !important;
   border: 0 !important;
-  clip: rect(0, 0, 0, 0) !important;
+
+  // Replaces the deprecated `clip: rect(0, 0, 0, 0)`. Same visually-hidden
+  // result, and unlike `clip` it is not limited to absolutely positioned
+  // elements.
+  clip-path: inset(50%) !important;
 }

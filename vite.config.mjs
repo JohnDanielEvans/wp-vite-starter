@@ -1,8 +1,14 @@
-// vite.config.js
+// vite.config.mjs
 import path from "path";
 import { defineConfig } from "vite";
 import VitePluginBrowserSync from "vite-plugin-browser-sync";
-import svgSpritePlugin from "vite-plugin-svg-sprite-component";
+import svgSpritePluginCjs from "vite-plugin-svg-sprite-component";
+
+// vite-plugin-svg-sprite-component is CommonJS with `exports.default`. Loaded as
+// real ESM (this file is .mjs) Node hands back the module object rather than the
+// factory, so the callable lives one level down. The `??` keeps this working if
+// the package ever ships a proper ESM build.
+const svgSpritePlugin = svgSpritePluginCjs.default ?? svgSpritePluginCjs;
 
 export default defineConfig({
   optimizeDeps: {
@@ -26,10 +32,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "~bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
-      jquery: "jquery/dist/jquery.min.js",
-      "@assets": path.resolve(__dirname, "src/assets"),
-      "@static": path.resolve(__dirname, "public/static"),
+      "~bootstrap": path.resolve(import.meta.dirname, "node_modules/bootstrap"),
+      "@assets": path.resolve(import.meta.dirname, "src/assets"),
+      "@static": path.resolve(import.meta.dirname, "public/static"),
     },
   },
   build: {
@@ -37,13 +42,13 @@ export default defineConfig({
       include: [/node_modules/],
     },
     assetsInlineLimit: 0,
-    outDir: path.resolve(__dirname, "./dist"),
+    outDir: path.resolve(import.meta.dirname, "./dist"),
     emptyOutDir: true,
     target: "es2018",
     rollupOptions: {
       input: {
-        app: path.resolve(__dirname, `src/assets/app.js`),
-        "front-page": path.resolve(__dirname, `src/assets/js/front-page.js`),
+        app: path.resolve(import.meta.dirname, `src/assets/app.js`),
+        "front-page": path.resolve(import.meta.dirname, `src/assets/js/front-page.js`),
       },
       output: {
         entryFileNames: `assets/js/[name].js`,

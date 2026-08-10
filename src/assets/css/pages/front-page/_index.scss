@@ -2,7 +2,7 @@
 @use "../../base/mixins" as mix;
 
 // Front page styles.
-// Entry point is registered in vite.config.js as `front-page`
+// Entry point is registered in vite.config.mjs as `front-page`
 // and emitted in parts/global-footer.php behind is_front_page().
 
 .front-page {
