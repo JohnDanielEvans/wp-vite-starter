@@ -1,4 +1,13 @@
 <?php
+/**
+ * Privacy policy page template.
+ *
+ * The copy below is placeholder scaffolding that exists to demonstrate the
+ * markup and styling hooks — it is NOT a privacy policy and has no legal
+ * standing. Replace every section with your own, and have it reviewed by
+ * someone qualified before the site goes live. WordPress also ships a policy
+ * generator under Settings → Privacy that is a better starting point than this.
+ */
 get_template_part("./parts/global-header"); ?>
 
 <div class="privacy">
@@ -9,24 +18,25 @@ get_template_part("./parts/global-header"); ?>
       ]); ?>
       <div class="privacy__inner">
         <p class="privacy__text">
-          （以下，「当社」といいます。）は，本ウェブサイト上で提供するサービス（以下,「本サービス」といいます。）における，ユーザーの個人情報の取扱いについて，以下のとおりプライバシーポリシー（以下，「本ポリシー」といいます。）を定めます。
+          Placeholder introduction. Describe who operates this site and what this
+          policy covers, then replace the sections below with your own terms.
         </p>
         <div class="privacy__wrapper">
           <div class="privacy__contents">
-            <h2 class="privacy__contents__title">第1条（個人情報）</h2>
-            <p class="privacy__contents__text">「個人情報」とは，個人情報保護法にいう「個人情報」を指すものとし，生存する個人に関する情報であって，当該情報に含まれる氏名，生年月日，住所，電話番号，連絡先その他の記述等により特定の個人を識別できる情報及び容貌，指紋，声紋にかかるデータ，及び健康保険証の保険者番号などの当該情報単体から特定の個人を識別できる情報（個人識別情報）を指します。</p>
+            <h2 class="privacy__contents__title">Section 1 — What we collect</h2>
+            <p class="privacy__contents__text">Placeholder body copy. Replace this with a description of the personal information the site collects.</p>
           </div>
           <div class="privacy__contents">
-            <h2 class="privacy__contents__title">第2条（個人情報の収集方法）</h2>
-            <p class="privacy__contents__text">当社は，ユーザーが利用登録をする際に氏名，生年月日，住所，電話番号，メールアドレス，銀行口座番号，クレジットカード番号，運転免許証番号などの個人情報をお尋ねすることがあります。また，ユーザーと提携先などとの間でなされたユーザーの個人情報を含む取引記録や決済に関する情報を,当社の提携先（情報提供元，広告主，広告配信先などを含みます。以下，｢提携先｣といいます。）などから収集することがあります。</p>
+            <h2 class="privacy__contents__title">Section 2 — How we collect it</h2>
+            <p class="privacy__contents__text">Placeholder body copy. Replace this with a description of how that information is gathered.</p>
           </div>
           <div class="privacy__contents">
-            <h2 class="privacy__contents__title">第3条（個人情報を収集・利用する目的）</h2>
-            <p class="privacy__contents__text">当社が個人情報を収集・利用する目的は，以下のとおりです。</p>
+            <h2 class="privacy__contents__title">Section 3 — How we use it</h2>
+            <p class="privacy__contents__text">Placeholder body copy. Replace this with the purposes the information is used for. An unordered list renders like so:</p>
             <ul>
-              <li>当社サービスの提供・運営のため</li>
-              <li>ユーザーからのお問い合わせに回答するため（本人確認を行うことを含む）</li>
-              <li>ユーザーが利用中のサービスの新機能，更新情報，キャンペーン等及び当社が提供する他のサービスの案内のメールを送付するため</li>
+              <li>Placeholder list item</li>
+              <li>Placeholder list item</li>
+              <li>Placeholder list item</li>
             </ul>
           </div>
         </div>

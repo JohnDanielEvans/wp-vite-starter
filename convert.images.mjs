@@ -1,12 +1,11 @@
 /**
- * Convert images to webp and avif
- * 
- * sharpを使用して画像をwebpとavifに変換します。
+ * Convert images to WebP and AVIF using sharp.
  * https://sharp.pixelplumbing.com/
- * 
- * このスクリプトは、指定されたディレクトリ内の画像ファイルを対象に、
- * JPEG と PNG 画像を WebP と AVIF 形式に変換して出力ディレクトリに保存します。
- * また、変換後もオリジナルの画像を保存し、その他の形式のファイルもそのままコピーします。
+ *
+ * Walks the source image directory and, for every JPEG and PNG, writes WebP and
+ * AVIF variants into the output directory. The original is copied across as
+ * well, so `parts/picture.php` always has a fallback source to point at. Files
+ * in any other format are copied through untouched.
  */
 
 import sharp from "sharp";

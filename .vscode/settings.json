@@ -1,38 +1,38 @@
 
 {
-  "css.validate": false, // vscode内蔵のCSS検証を無効化
-	"scss.validate": false, // vscode内蔵のSCSS検証を無効化
-  "stylelint.validate": ["css", "scss"], // stylelintの検証を有効化
-  "editor.formatOnSave": true, // 保存時に自動フォーマットを有効化
-  "editor.defaultFormatter": "esbenp.prettier-vscode", // デフォルトのフォーマッタをPrettierに設定
+  "css.validate": false, // Disable VS Code's built-in CSS validation (stylelint handles it)
+	"scss.validate": false, // Disable VS Code's built-in SCSS validation (stylelint handles it)
+  "stylelint.validate": ["css", "scss"], // Let stylelint validate these languages
+  "editor.formatOnSave": true, // Format on save
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // Use Prettier as the default formatter
   "prettier.documentSelectors": [
     "**/*.{js,jsx,ts,tsx,vue,html,css,scss,less,json,md,mdx,graphql,yaml,yml,php}"
   ],
 
 
   "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 念の為HTMLのフォーマッタをPrettierに設定
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // Pin Prettier for HTML explicitly
   },
   "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 念の為CSSのフォーマッタをPrettierに設定
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // Pin Prettier for CSS explicitly
   },
   "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 念の為SCSSのフォーマッタをPrettierに設定
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // Pin Prettier for SCSS explicitly
   },
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 念の為JavaScriptのフォーマッタをPrettierに設定
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // Pin Prettier for JavaScript explicitly
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 念の為TypeScriptのフォーマッタをPrettierに設定
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // Pin Prettier for TypeScript explicitly
   },
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 念の為JSONのフォーマッタをPrettierに設定
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // Pin Prettier for JSON explicitly
   },
   "[php]": {
       "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.stylelint": "explicit", // 保存時にstylelintで自動修正を有効化
-    "source.fixAll.eslint": "explicit" // 保存時にESLintで自動修正を有効化
+    "source.fixAll.stylelint": "explicit", // Apply stylelint autofixes on save
+    "source.fixAll.eslint": "explicit" // Apply ESLint autofixes on save
   },
 }

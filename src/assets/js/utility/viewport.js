@@ -1,7 +1,9 @@
 const viewport = document.querySelector('meta[name="viewport"]');
 
 /**
- * @description 375px以下のビューポートを固定
+ * @description Pin the viewport at 375px on narrower screens. Below that width
+ * the layout would otherwise shrink past its minimum; locking the viewport lets
+ * the device scale the page down instead of reflowing it.
  */
 export const viewportFix = () => {
   const value = window.outerWidth > 375 ? "width=device-width,initial-scale=1" : "width=375";
@@ -9,7 +11,10 @@ export const viewportFix = () => {
 };
 
 /**
- * @description ビューポートのサイズを取得する
+ * @description Publish the viewport size as the `--vw` / `--vh` custom
+ * properties, each holding 1% of the respective dimension. Use these instead of
+ * the `vh` unit on mobile, where the browser chrome makes `100vh` taller than
+ * the visible area.
  */
 export const viewportSize = () => {
   const vw = window.innerWidth * 0.01;

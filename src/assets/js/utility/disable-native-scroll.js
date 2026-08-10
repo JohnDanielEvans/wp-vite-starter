@@ -1,13 +1,13 @@
 /**
- * デフォルトのイベントを禁止させる
- * @param {object} e イベントオブジェクト
+ * Suppress the default action for an event.
+ * @param {object} e The event object.
  */
 const preventEvent = (e) => {
   e.preventDefault();
 };
 
 /**
- * @description スクロール禁止
+ * @description Block scrolling.
  */
 const scrollEventNone = () => {
   document.addEventListener("wheel", preventEvent, { passive: false });
@@ -17,7 +17,7 @@ const scrollEventNone = () => {
 };
 
 /**
- * @description スクロール解除
+ * @description Restore scrolling.
  */
 const scrollEventAuto = () => {
   document.removeEventListener("wheel", preventEvent, { passive: false });
@@ -27,9 +27,11 @@ const scrollEventAuto = () => {
 };
 
 /**
- * 背景固定切り替え機能
- * @description 背景固定を切り替えられるが、コンテンツの中身をスクロールさせたい場合は追加で実装するかfixedで固定させる必要があります。
- * @param {boolean} state スクロールを禁止するか解除するかを切り替える真偽値。true=>固定 / false=>解除。
+ * Toggle background scroll locking.
+ * @description Locks the page behind an overlay. Note this blocks scrolling
+ * everywhere, including inside the overlay itself — if the overlay content needs
+ * to scroll, position it `fixed` or handle its scrolling separately.
+ * @param {boolean} state true locks scrolling, false restores it.
  */
 export const disableNativeScroll = (state) => {
   state ? scrollEventNone() : scrollEventAuto();

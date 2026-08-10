@@ -12,7 +12,7 @@ export const anchorLink = () => {
       const targetId = e.currentTarget.hash;
       const targetElm = document.querySelector(targetId);
 
-      if (!targetElm) throw new Error("IDに紐ずくDOMが取得できていません");
+      if (!targetElm) throw new Error(`No element matches the anchor target "${targetId}"`);
 
       const rectTop = targetElm.getBoundingClientRect().top;
       const top = Math.floor(rectTop + window.pageYOffset);
