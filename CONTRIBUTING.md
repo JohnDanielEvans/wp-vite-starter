@@ -40,9 +40,13 @@ prettier) over staged files, so most style issues are fixed for you on commit.
 Don't hand-format around the tools — if a rule is wrong, change the rule and say
 why in the PR.
 
+CI runs both of those on every pull request, plus `php -l` over the theme's PHP
+and a check that the packaged theme is complete. Running them locally first just
+saves you a round trip.
+
 There is no test suite. Verification is: does it build, does it lint, and does
 the affected page still render correctly in the local wp-env. Say in the PR
-which pages you actually loaded.
+which pages you actually loaded — CI cannot check that for you.
 
 ## Scope
 

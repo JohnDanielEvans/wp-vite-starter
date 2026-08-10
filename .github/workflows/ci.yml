@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+# A PR that gets three pushes in a minute only needs the last one checked.
+# Older in-flight runs are cancelled; pushes to main are not, so main keeps a
+# complete record of what passed.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# This workflow builds untrusted pull-request code, so it gets no write access
+# and no secrets. Nothing here needs either.
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 💻 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Matches the engines floor in package.json: sharp needs 20.9,
+          # import.meta.dirname in the Vite config needs 20.11.
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🧹 Lint markup, styles and scripts
+        run: npm run lint:check
+
+      - name: 🏗 Build and package theme
+        run: npm run build:prod
+
+      # The build is the real assertion, but an empty or partial deploy/ has
+      # slipped through before via a silently-skipped copy step. Check the
+      # packaged theme actually contains what WordPress needs to load it.
+      - name: ✅ Verify the packaged theme
+        run: |
+          # Same source of truth the packaging scripts use, so this keeps
+          # working after the theme is renamed for a new project.
+          source scripts/theme-slug.sh
+          THEME="deploy/$THEME_SLUG"
+          for f in style.css index.php functions.php assets/js/app.js assets/css/app.css; do
+            if [ ! -s "$THEME/$f" ]; then
+              echo "::error::Packaged theme is missing or has an empty $f"
+              exit 1
+            fi
+          done
+          echo "Packaged theme looks complete:"
+          du -sh "$THEME"
+
+  php-syntax:
+    name: PHP syntax
+    runs-on: ubuntu-latest
+    # php -l catches parse errors the JS toolchain cannot see. markuplint reads
+    # the templates as markup, and nothing else in CI executes PHP at all.
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # Matches "Requires PHP" in src/style.css — the floor the theme claims
+          # to support, so syntax is checked against the oldest allowed version.
+          php-version: '8.1'
+          coverage: none
+
+      - name: 🔍 Lint every PHP file
+        # Report every broken file, not just the first. Actions runs this with
+        # `bash -e`, so each check is wrapped in an if rather than relying on
+        # `||`, which would abort the loop on the first failure.
+        run: |
+          fail=0
+          count=0
+          while IFS= read -r f; do
+            count=$((count + 1))
+            if ! output=$(php -l "$f" 2>&1); then
+              echo "::error file=$f::$(echo "$output" | head -1)"
+              fail=1
+            fi
+          done < <(find src -name '*.php' -type f)
+          echo "Checked $count PHP files."
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No PHP files found — the check is not looking where it thinks it is."
+            exit 1
+          fi
+          exit $fail
