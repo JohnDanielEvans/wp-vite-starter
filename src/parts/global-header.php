@@ -12,7 +12,7 @@
   <meta charset="<?php bloginfo("charset"); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="<?= URL_FAVICON ?>" />
-  <link rel="apple-touch-icon" href="<?= vite_src_static("apple-touch-icon.png") ?>">
+  <link rel="apple-touch-icon" href="<?= wpvs_vite_src_static("apple-touch-icon.png") ?>">
 <!-- CSS is enqueued via wp_enqueue_style in functions.php with versioning -->
 
   <?php wp_head(); ?>

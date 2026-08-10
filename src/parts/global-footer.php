@@ -57,9 +57,9 @@
   <?php endif; ?>
 <?php else: ?>
   <!-- Production: versioned bundles -->
-  <script type="module" src="<?= vite_src_js("app.js") ?>" defer></script>
+  <script type="module" src="<?= wpvs_vite_src_js("app.js") ?>" defer></script>
   <?php if (is_front_page()): ?>
-    <script type="module" src="<?= vite_src_js("front-page.js") ?>"></script>
+    <script type="module" src="<?= wpvs_vite_src_js("front-page.js") ?>"></script>
   <?php endif; ?>
 <?php endif; ?>
 

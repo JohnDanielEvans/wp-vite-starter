@@ -9,7 +9,7 @@ if (!defined("IS_TYPE")) {
  * Get the theme build version from version.json
  * Used for cache busting CSS/JS assets
  */
-function get_theme_version()
+function wpvs_get_theme_version()
 {
     static $version = null;
 
@@ -40,38 +40,38 @@ function get_theme_version()
 /**
  * Return the JS file path with version query string.
  */
-function vite_src_js($name)
+function wpvs_vite_src_js($name)
 {
     if (IS_TYPE === "local") {
         return "http://localhost:3030/src/assets/" . ltrim($name, "/");
     }
 
-    return get_template_directory_uri() . "/assets/js/" . ltrim($name, "/") . "?ver=" . get_theme_version();
+    return get_template_directory_uri() . "/assets/js/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**
  * Return the CSS file path with version query string.
  */
-function vite_src_css($name)
+function wpvs_vite_src_css($name)
 {
     if (IS_TYPE === "local") {
         return "http://localhost:3030/src/assets/css/" . ltrim($name, "/");
     }
 
     $name = str_replace(".scss", ".css", $name);
-    return get_template_directory_uri() . "/assets/css/" . ltrim($name, "/") . "?ver=" . get_theme_version();
+    return get_template_directory_uri() . "/assets/css/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**
  * Return static assets path (like favicon, svg, etc).
  */
-function vite_src_static($name)
+function wpvs_vite_src_static($name)
 {
     if (IS_TYPE === "local") {
         return "http://localhost:3030/static/" . ltrim($name, "/");
     }
 
-    return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . get_theme_version();
+    return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**
@@ -82,7 +82,7 @@ function vite_src_static($name)
  * every browser can decode. Pass "webp" or "avif" explicitly to get a converted
  * variant for a <source> tag.
  */
-function vite_src_images($name, $extension = null)
+function wpvs_vite_src_images($name, $extension = null)
 {
     if (IS_TYPE === "local") {
         return "http://localhost:3030/src/assets/images/" . ltrim($name, "/");
@@ -92,7 +92,7 @@ function vite_src_images($name, $extension = null)
         $name = preg_replace('/\.(jpe?g|png)$/i', "." . $extension, $name);
     }
 
-    return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . get_theme_version();
+    return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**

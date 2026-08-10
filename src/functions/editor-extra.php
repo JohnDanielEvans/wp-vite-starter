@@ -1,28 +1,28 @@
 <?php
 
-add_action("init", "editor_extra_init");
-add_action("admin_menu", "remove_menus", 999);
+add_action("init", "wpvs_editor_extra_init");
+add_action("admin_menu", "wpvs_remove_menus", 999);
 
-function editor_extra_init()
+function wpvs_editor_extra_init()
 {
-    disable_post_support();
-    enable_post_support();
+    wpvs_disable_post_support();
+    wpvs_enable_post_support();
 }
 
-function disable_post_support()
+function wpvs_disable_post_support()
 {
-    remove_post_type_support("post", "excerpt"); // 抜粋
-    remove_post_type_support("post", "trackbacks"); // トラックバック
-    remove_post_type_support("post", "comments"); // ディスカッション
+    remove_post_type_support("post", "excerpt"); // Excerpt
+    remove_post_type_support("post", "trackbacks"); // Trackbacks
+    remove_post_type_support("post", "comments"); // Discussion
 }
 
-function enable_post_support()
+function wpvs_enable_post_support()
 {
-    add_theme_support("post-thumbnails"); // アイキャッチを有効化
+    add_theme_support("post-thumbnails"); // Enable featured images
 }
 
-function remove_menus()
+function wpvs_remove_menus()
 {
-    remove_menu_page("edit.php"); // 投稿
-    remove_menu_page("edit-comments.php"); // コメント
+    remove_menu_page("edit.php"); // Posts
+    remove_menu_page("edit-comments.php"); // Comments
 }

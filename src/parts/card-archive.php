@@ -13,7 +13,7 @@ $images = $args["images"] ?? [];
       <?php if ($images["src"]): ?>
         <img src="<?= $images["src"] ?>" width="600" height="400" decoding="async" alt="<?= $images["alt"] ?>">
       <?php else: ?>
-        <img src="<?= vite_src_images("noimage.jpg") ?>" width="800" height="560" decoding="async" alt="">
+        <img src="<?= wpvs_vite_src_images("noimage.jpg") ?>" width="800" height="560" decoding="async" alt="">
       <?php endif; ?>
     </p>
     <div class="card-archive__category">

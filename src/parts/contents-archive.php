@@ -2,7 +2,7 @@
 // pagination
 $pagination_range = 1;
 $pagination_add_first_and_last = true;
-$pagination = get_pagination($pagination_range, $pagination_add_first_and_last);
+$pagination = wpvs_get_pagination($pagination_range, $pagination_add_first_and_last);
 ?>
 
 <div class="archive-works">

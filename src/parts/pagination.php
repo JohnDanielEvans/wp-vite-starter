@@ -9,7 +9,7 @@ $pagination = $args["pagination"] ?? [];
     <?php if ($pagination["prev"]): ?>
       <div class="pagination__item">
         <a href="<?= get_pagenum_link($pagination["prev"]) ?>" class="pagination__arrow pagination__arrow--prev">
-          <?= get_svg_sprite("icon-arrow-prev", "previous") ?>
+          <?= wpvs_get_svg_sprite("icon-arrow-prev", "previous") ?>
         </a>
       </div>
     <?php endif; ?>
@@ -40,7 +40,7 @@ $pagination = $args["pagination"] ?? [];
     <?php if ($pagination["next"]): ?>
       <div class="pagination__item">
         <a href="<?= get_pagenum_link($pagination["next"]) ?>" class="pagination__arrow pagination__arrow--next">
-          <?= get_svg_sprite("icon-arrow-next", "next") ?>
+          <?= wpvs_get_svg_sprite("icon-arrow-next", "next") ?>
         </a>
       </div>
     <?php endif; ?>

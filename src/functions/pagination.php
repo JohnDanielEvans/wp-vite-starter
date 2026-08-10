@@ -4,7 +4,7 @@
  * Pagination
  */
 
-function get_pagination(int $range, bool $add_first_and_last = false)
+function wpvs_get_pagination(int $range, bool $add_first_and_last = false)
 {
     global $paged, $wp_query;
     $pages = (int) $wp_query->max_num_pages;
@@ -17,7 +17,7 @@ function get_pagination(int $range, bool $add_first_and_last = false)
     $prev = $paged !== 1 ? $paged - 1 : false;
     $next = $paged !== $pages ? $paged + 1 : false;
 
-    $numbers = get_pagination_numbers($pages, $paged, $range);
+    $numbers = wpvs_get_pagination_numbers($pages, $paged, $range);
 
     if ($add_first_and_last) {
         $numbers[] = 1;
@@ -35,7 +35,7 @@ function get_pagination(int $range, bool $add_first_and_last = false)
     return $rtn;
 }
 
-function get_pagination_numbers(int $pages, int $paged, int $range)
+function wpvs_get_pagination_numbers(int $pages, int $paged, int $range)
 {
     $rtn = [];
     $min_number = $range * 2 + 1;

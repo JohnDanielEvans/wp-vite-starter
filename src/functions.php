@@ -8,7 +8,7 @@ require_once get_theme_file_path("./functions/pagination.php");
 require_once get_theme_file_path("./functions/ajax.php");
 require_once get_theme_file_path("./functions/post-types.php");
 
-function enqueue_custom_scripts()
+function wpvs_enqueue_custom_scripts()
 {
     // Skip all enqueues during local dev (Vite handles it)
     if (defined("IS_TYPE") && IS_TYPE === "local") {
@@ -16,14 +16,14 @@ function enqueue_custom_scripts()
     }
 
     // Use theme version for cache busting
-    $version = function_exists("get_theme_version") ? get_theme_version() : "1.0.0";
+    $version = function_exists("wpvs_get_theme_version") ? wpvs_get_theme_version() : "1.0.0";
     wp_enqueue_style("theme-style", get_template_directory_uri() . "/assets/css/app.css", [], $version);
 
     // Optionally: enqueue legacy plugin or extra scripts here
     // Vite-built scripts are injected in global-footer.php with type="module"
 }
 
-add_action("wp_enqueue_scripts", "enqueue_custom_scripts");
+add_action("wp_enqueue_scripts", "wpvs_enqueue_custom_scripts");
 
 // Menu locations used by parts/global-header.php and parts/global-footer.php
 add_action("after_setup_theme", function () {

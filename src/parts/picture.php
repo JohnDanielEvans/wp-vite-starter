@@ -18,18 +18,18 @@
 $images = $args["images"] ?? [];
 $lazy = $args["lazy"] ?? false;
 
-if (!function_exists("is_full_url")) {
-    function is_full_url($url)
+if (!function_exists("wpvs_is_full_url")) {
+    function wpvs_is_full_url($url)
     {
         return strpos($url, "http://") === 0 || strpos($url, "https://") === 0;
     }
 }
 
 $raw = $images["src"] ?? "";
-$is_full = $raw !== "" && is_full_url($raw);
-$has_helper = function_exists("vite_src_images");
+$is_full = $raw !== "" && wpvs_is_full_url($raw);
+$has_helper = function_exists("wpvs_vite_src_images");
 
-$src = $is_full ? $raw : ($has_helper ? vite_src_images($raw) : "");
+$src = $is_full ? $raw : ($has_helper ? wpvs_vite_src_images($raw) : "");
 
 // Only raster sources have .avif/.webp variants — convert.images.mjs skips
 // everything else. Declaring type="image/avif" on an SVG makes the browser
@@ -40,8 +40,8 @@ $use_sources = !$is_full && $is_raster && $has_helper && defined("IS_TYPE") && I
 
 <?php if ($use_sources): ?>
 <picture>
-  <source srcset="<?= esc_url(vite_src_images($raw, "avif")) ?>" type="image/avif" />
-  <source srcset="<?= esc_url(vite_src_images($raw, "webp")) ?>" type="image/webp" />
+  <source srcset="<?= esc_url(wpvs_vite_src_images($raw, "avif")) ?>" type="image/avif" />
+  <source srcset="<?= esc_url(wpvs_vite_src_images($raw, "webp")) ?>" type="image/webp" />
 <?php endif; ?>
   <img
     src="<?= esc_url($src) ?>"
