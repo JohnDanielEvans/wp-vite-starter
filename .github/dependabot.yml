@@ -1,0 +1,35 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Nearly everything here is build tooling, and ungrouped updates turn that
+    # into a PR per package every week. One grouped PR per category is reviewable;
+    # twenty are not, and unreviewed dependency PRs are worse than none.
+    groups:
+      dev-tooling:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+      runtime:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+    # The groups above cover only minor and patch, so majors fall outside them
+    # and arrive as individual PRs. That is deliberate: majors are the ones that
+    # break builds and deserve to be read on their own. Vite 6 -> 8 and
+    # stylelint 16 -> 17 each needed real changes in this repo.
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"

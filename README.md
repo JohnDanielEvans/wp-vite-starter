@@ -16,7 +16,7 @@ A WordPress starter theme wired to a modern local-development harness: [`@wordpr
 | Server-side build deploy (alternative model) | `scripts/server-deploy.sh`, `.github/workflows/*.yml.example` |
 | Theme-level asset serving rules | `src/.htaccess` |
 | Lint + format on commit | `.husky/`, `eslint.config.mjs`, `.stylelintrc.json`, `.markuplintrc.json`, `.prettierrc.json` |
-| Claude Code permission allowlist | `.claude/settings.json` |
+| Grouped dependency updates | `.github/dependabot.yml` |
 
 ## Quick start
 
@@ -145,9 +145,10 @@ Third-party code that ships in this repo under its own license:
 | --- | --- | --- |
 | `src/assets/css/base/_destyle.scss` | [destyle.css](https://github.com/nicolas-cusan/destyle.css) v4.0.0 by Nicolas Cusan | MIT |
 
-Runtime dependencies (Bootstrap, GSAP, AOS, Keen-Slider, Rellax, animate.css)
-are installed via npm and carry their own licenses — GSAP's standard license in
-particular has terms worth reading before commercial use.
+Runtime dependencies (Bootstrap, GSAP, AOS, Keen-Slider, Rellax) are installed
+via npm and carry their own licenses — GSAP's standard license in particular has
+terms worth reading before commercial use. Only Bootstrap's grid and spacing
+utilities are compiled in; see `src/assets/css/base/_global.scss`.
 
 ## License
 

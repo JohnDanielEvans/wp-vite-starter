@@ -1,38 +1,18 @@
 {
-  "rules": {
-    "case-sensitive-tag-name": false,
-    "deprecated-attr": true,
-    "attr-value-quotes": false,
-    "landmark-roles": false,
-    "no-empty-palpable-content": false,
-    "label-has-control": false,
-    "ineffective-attr": false,
-    "class-naming": false,
-    "no-default-value": false,
-    "disallowed-element": true,
-    "case-sensitive-attr-name": false,
-    "end-tag": false,
-    "invalid-attr": true,
-    "character-reference": false,
-    "id-duplication": true,
-    "doctype": "always",
-    "attr-duplication": true,
-    "placeholder-label-option": true,
-    "permitted-contents": true,
-    "no-hard-code-id": false,
-    "no-boolean-attr-value": false,
-    "required-h1": true,
-    "required-element": true,
-    "no-refer-to-non-existent-id": false,
-    "required-attr": true,
-    "require-datetime": true,
-    "require-accessible-name": false,
-    "no-use-event-handler-attr": false,
-    "use-list": false,
-    "wai-aria": true,
-    "deprecated-element": true,
-    "parser": "php",
-    "plugins": ["@prettier/plugin-php"]
+  "$comment": "The parser mapping is what makes this config do anything at all. It must be top level: nested under 'rules' (where it used to live) markuplint reports 'Rule not found: parser', silently skips every .php file, and lint:html passes on markup it never read. Only document-level rules are disabled below, because these templates are fragments, not documents.",
+  "parser": {
+    "\\.php$": "@markuplint/php-parser"
   },
-  "excludeFiles": ["src/parts/global-header.php", "plugins/", "uploads/"]
+  "rules": {
+    "attr-duplication": true,
+    "deprecated-attr": true,
+    "deprecated-element": true,
+    "disallowed-element": true,
+    "id-duplication": true,
+    "placeholder-label-option": true,
+    "require-datetime": true,
+    "required-attr": true,
+    "wai-aria": true
+  },
+  "excludeFiles": ["plugins/", "uploads/"]
 }

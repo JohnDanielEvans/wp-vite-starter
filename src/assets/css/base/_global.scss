@@ -1,7 +1,12 @@
 @use "./variables" as vars;
 
-// Import all of Bootstrap's CSS
-@import "/node_modules/bootstrap/scss/bootstrap";
+// Bootstrap's grid and spacing utilities only — containers, rows, columns and
+// the margin/padding/flex utility classes. The templates use a handful of these
+// (container, row, col-*, mb-4, py-4, px-3); importing the whole framework also
+// pulled in every component (buttons, modals, dropdowns, forms, tables…) that
+// this theme styles itself, for roughly a quarter of a megabyte of unused CSS.
+// Swap back to "bootstrap/scss/bootstrap" if you want the components.
+@import "bootstrap/scss/bootstrap-grid";
 
 // ============================================
 // CSS CUSTOM PROPERTIES (for JS access & theming)

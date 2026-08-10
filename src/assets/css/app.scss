@@ -13,4 +13,6 @@
 
 // Load page styles
 @use "./pages/index" as pages;
-@import "animate.css/animate.min.css";
+
+// Library CSS (currently just aos) is imported from app.js, so it lives in one
+// place alongside the JS that needs it.

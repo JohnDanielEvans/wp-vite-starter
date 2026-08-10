@@ -46,5 +46,5 @@ wp-content/
 # CI writes the SSH deploy key here at runtime — never commit it
 deploy_key
 
-# Claude Code machine-local overrides
-.claude/settings.local.json
+# Claude Code local config — tooling preference, not part of the theme
+.claude/

@@ -5,7 +5,6 @@ import { accordion } from "./modules/accordion";
 import { loadMore } from "./modules/load-more";
 import { viewportFix, viewportSize } from "./utility/viewport";
 import 'aos/dist/aos.css';
-import 'animate.css';
 import AOS from 'aos';
 import Rellax from "rellax";
 
