@@ -1,9 +1,15 @@
 /*
 Theme Name: WP Vite Starter
+Theme URI: https://github.com/JohnDanielEvans/wp-vite-starter
 Author: John Evans
+Author URI: https://github.com/JohnDanielEvans
 Description: A WordPress starter theme with a wp-env + Vite local development harness, image optimization pipeline, asset cache-busting, and rsync-based CI deployment.
 Version: 1.0.0
 Requires at least: 6.0
+Tested up to: 6.8
 Requires PHP: 8.1
+License: MIT
+License URI: https://opensource.org/licenses/MIT
 Text Domain: wp-vite-starter
+Tags: starter-theme, vite, wp-env, developer-tools
 */

@@ -7,7 +7,7 @@ A WordPress starter theme wired to a modern local-development harness: [`@wordpr
 | Piece | File(s) |
 | --- | --- |
 | Dockerized local WordPress on `:8000` | `.wp-env.json` |
-| Vite dev server + BrowserSync proxy on `:3030` | `vite.config.js` |
+| Vite dev server + BrowserSync proxy on `:3030` | `vite.config.mjs` |
 | PHP↔Vite asset bridge (dev URLs vs. versioned build URLs) | `src/functions/vite-config.php` |
 | Cache-busting build hash | `scripts/generate-version.mjs` |
 | JPEG/PNG → WebP + AVIF conversion | `convert.images.mjs` |
@@ -39,7 +39,7 @@ Stop with `npm run wp:destroy`.
 `wp_get_environment_type()` drives the `IS_TYPE` constant (`src/functions/variables.php`). Everything downstream branches on it:
 
 - **Local** — `parts/global-footer.php` emits `<script type="module">` tags pointing at `http://localhost:3030`, so you get HMR against real WordPress output. No PHP enqueues run.
-- **Built** — `vite_src_js()` / `vite_src_css()` return `/assets/…?ver=<hash>`, where the hash comes from `version.json` written at build time.
+- **Built** — `wpvs_vite_src_js()` / `wpvs_vite_src_css()` return `/assets/…?ver=<hash>`, where the hash comes from `version.json` written at build time.
 
 `WP_ENVIRONMENT_TYPE` is set to `local` by `.wp-env.json`. On your servers, set it in `wp-config.php`.
 
@@ -102,9 +102,9 @@ Two are included; pick one.
 
 - **Edit `src/` only.** `dist/` and `deploy/` are build output and are gitignored.
 - **All images go in `src/assets/images/`.** The build emits `.webp` and `.avif` alongside the original. Render them through `parts/picture.php`, which wraps them in a `<picture>` with both variants and an original-format fallback.
-- **Site chrome — favicon, touch icon — goes in `public/static/`.** `copy-theme.sh` flattens that into `assets/images/` at build time, which is where `vite_src_static()` resolves to in a built theme.
+- **Site chrome — favicon, touch icon — goes in `public/static/`.** `copy-theme.sh` flattens that into `assets/images/` at build time, which is where `wpvs_vite_src_static()` resolves to in a built theme.
 - **Never commit database dumps.** `sql/` is gitignored: WordPress dumps carry `wp_users` rows (emails, password hashes) and plugin API keys in `wp_options`.
-- Adding a page-level JS entry point means registering it in `vite.config.js` under `build.rollupOptions.input` *and* emitting the tag in `parts/global-footer.php`.
+- Adding a page-level JS entry point means registering it in `vite.config.mjs` under `build.rollupOptions.input` *and* emitting the tag in `parts/global-footer.php`.
 
 ## Local database
 
@@ -117,10 +117,39 @@ npm run db:import   # restores it
 
 Keep those dumps out of version control.
 
-## Provenance
+## Contributing
 
-The initial scaffolding — the `destyle.scss` reset, the Sharp conversion script, the base template partials — derives from a third-party open-source wp-env + Vite starter theme. The Vite↔PHP asset bridge, versioning, packaging scripts, and deployment workflows are original work.
+Bug fixes, host-compatibility fixes, and documentation are welcome — see
+[CONTRIBUTING.md](CONTRIBUTING.md) for setup and what to run before opening a
+PR. Open an issue first for anything substantial.
+
+## Provenance & credits
+
+This theme is not scaffolded from scratch. Parts of it descend from an
+open-source wp-env + Vite starter theme — Japanese-language, translated during
+adaptation — whose name and URL I no longer have. If you recognise the lineage,
+please open an issue so it can be credited properly here.
+
+What came from that lineage, as best I can reconstruct it: the base template
+partial structure, the SCSS layout (`base/` / `parts/` / `pages/`), and the
+shape of the Sharp image-conversion script. The `works` custom post type and the
+Japanese-agency conventions visible in the markup are from the same source.
+
+Original work in this repository: the Vite↔PHP asset bridge
+(`src/functions/vite-config.php`), the build versioning and cache-busting, the
+theme packaging scripts, and the deployment workflows.
+
+Third-party code that ships in this repo under its own license:
+
+| Component | Source | License |
+| --- | --- | --- |
+| `src/assets/css/base/_destyle.scss` | [destyle.css](https://github.com/nicolas-cusan/destyle.css) v4.0.0 by Nicolas Cusan | MIT |
+
+Runtime dependencies (Bootstrap, GSAP, AOS, Keen-Slider, Rellax, animate.css)
+are installed via npm and carry their own licenses — GSAP's standard license in
+particular has terms worth reading before commercial use.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). Applies to the original work in this repository;
+third-party components remain under the licenses listed above.
