@@ -79,7 +79,7 @@
     "markuplint": "^4.11.8",
     "prettier": "^3.5.3",
     "sass": "^1.102.0",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.4",
     "stylelint": "^17.14.1",
     "stylelint-config-recess-order": "^7.7.0",
     "stylelint-config-standard-scss": "^17.0.0",
