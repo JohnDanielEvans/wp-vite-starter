@@ -50,7 +50,7 @@
   "$comment:overrides": "Transitive-only pins for advisories whose direct dependency has not yet released a bump. Each is a patched release within the same major the parent already asks for, so no parent API changes are involved. Re-check these on each dependency sweep and drop any the parent has caught up with.",
   "overrides": {
     "uuid": "^13.0.2",
-    "adm-zip": "^0.6.0"
+    "adm-zip": "^0.6.1"
   },
   "lint-staged": {
     "*.{html,php}": "markuplint",
