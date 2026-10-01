@@ -46,6 +46,9 @@ The theme runs straight from `src/`, so your edits appear immediately. Run
 | `npm run format` | Run Prettier over `src/` |
 | `npm run wp:start` / `wp:destroy` | Start / tear down local WordPress |
 | `npm run db:export` / `db:import` | Save and restore the local database |
+| `npm run init` | Rename the theme for a new project |
+| `npm run site:import` | Import an existing site's database |
+| `npm run theme:adopt` | Move an existing theme into this harness |
 
 ## Project layout
 
@@ -98,6 +101,20 @@ what a project needs to `.wp-env.json`:
 
 ## Using it for your own project
 
+### Starting something new
+
+```bash
+npm run init
+```
+
+Asks for a theme name, slug and author, then renames the theme everywhere it
+needs to agree — `src/style.css`, `scripts/theme-slug.sh`, both deploy
+workflows and `package.json` — and offers to remove the `works` portfolio demo
+and start a fresh git history.
+
+<details>
+<summary>Doing it by hand, or non-interactively</summary>
+
 Four edits rename the theme everywhere:
 
 1. `src/style.css` — the `Theme Name:` / `Author:` / `Text Domain:` header
@@ -107,6 +124,70 @@ Four edits rename the theme everywhere:
 
 Everything that packages or deploys reads `THEME_SLUG`. For a one-off build
 without editing anything: `THEME_SLUG=my-theme npm run deploy`.
+
+`init` also takes flags, so it can run unattended:
+
+```bash
+npm run init -- --name "Acme Corp" --slug acme-corp --author "You" --strip-demo --yes
+```
+
+</details>
+
+### Bringing in an existing site
+
+Two independent steps — run either, or both.
+
+```bash
+npm run site:import -- path/to/dump.sql.gz --uploads path/to/uploads
+```
+
+Imports a production database into the local environment: rewrites the live
+URLs to `localhost:8000` (walking serialized data so widgets and options
+survive), renames the tables if the dump uses a prefix other than `wp_`,
+reinstalls the plugins the database says were active, and gives you a working
+`admin` / `password` login, since nobody knows the live passwords.
+
+```bash
+npm run theme:adopt -- path/to/existing-theme
+```
+
+Moves an existing theme into `src/`, installs the Vite bridge, wires it into the
+theme's `functions.php`, creates the entry points, and points `THEME_SLUG` at
+it. It then prints the handful of template edits it will not guess at.
+
+<details>
+<summary>What the importer handles, and what it can't</summary>
+
+A plain `wp db import` leaves you with a site that redirects to production, so
+the importer does the three things that actually make a dump usable locally:
+
+| Problem | What happens without it |
+| --- | --- |
+| Live URLs throughout the database | The local site redirects to the live domain |
+| Table prefix other than `wp_` | WordPress shows a fresh install screen; the data is there but unread |
+| Prefixed `user_roles` / capability meta keys | Every user loses their role, including the administrator |
+
+It does **not** carry across: plugin *code* (only the record of what was
+active — premium plugins are listed at the end for you to drop into
+`./plugins/`), `wp-config.php` constants, or anything in `.htaccess`.
+
+Multisite dumps are rejected rather than half-imported.
+
+</details>
+
+<details>
+<summary>What theme:adopt leaves to you</summary>
+
+It will not emit the script tags or remove the theme's existing
+`wp_enqueue_*` calls. Both need a judgement call about an unfamiliar template,
+and a script that guesses produces a theme loading its assets twice or not at
+all — so it prints exactly what to add and which files still enqueue their own
+assets.
+
+It replaces `src/` entirely, so commit or stash first; git is the undo button,
+and the script refuses to run on a dirty `src/` unless you pass `--force`.
+
+</details>
 
 ## Deploying
 

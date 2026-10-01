@@ -41,6 +41,22 @@ jobs:
       - name: 🧹 Lint markup, styles and scripts
         run: npm run lint:check
 
+      # The shell scripts carry the packaging, deploy and onboarding logic, and
+      # nothing else in CI executes them. A syntax error in one would otherwise
+      # only surface when someone ran it.
+      - name: 🐚 Check shell script syntax
+        run: |
+          count=0
+          for f in scripts/*.sh; do
+            bash -n "$f" || { echo "::error file=$f::Shell syntax error"; exit 1; }
+            count=$((count + 1))
+          done
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No shell scripts found — the check is not looking where it thinks it is."
+            exit 1
+          fi
+          echo "Checked $count shell scripts."
+
       - name: 🏗 Build and package theme
         run: npm run build:prod
 

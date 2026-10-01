@@ -4,11 +4,7 @@
   "plugins": [],
   "themes": ["./src/"],
   "port": 8000,
-  "env": {
-    "tests": {
-      "port": 8001
-    }
-  },
+  "testsEnvironment": false,
   "mappings": {
     "wp-content/plugins": "./plugins",
     "sql": "./sql",
