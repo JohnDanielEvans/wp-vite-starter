@@ -50,10 +50,12 @@
     "build:prod": "vite build && npm run generate-version && npm run press:images && npm run copy-theme"
   },
   "$comment:dom-serializer": "Not imported by our code. vite-plugin-svg-sprite-component require()s dom-serializer without declaring it, so it only resolves when npm happens to hoist it to the top level. Declaring it here makes that explicit rather than depending on node_modules layout — without it, `npm ci` can nest it and the build dies with MODULE_NOT_FOUND. Remove only if that plugin is replaced (it was last published in 2022).",
-  "$comment:overrides": "Transitive-only pins for advisories whose direct dependency has not yet released a bump. Each is a patched release within the same major the parent already asks for, so no parent API changes are involved. Re-check these on each dependency sweep and drop any the parent has caught up with.",
+  "$comment:overrides": "Transitive-only pins for advisories whose direct dependency has not yet released a bump. Each is a patched release within the same major the parent already asks for, so no parent API changes are involved. postcss-selector-parser is pinned because npm's own 'fix' for it is to DOWNGRADE markuplint to 4.11.5, which is a regression rather than a fix. Re-check these on each dependency sweep and drop any the parent has caught up with.",
   "overrides": {
     "uuid": "^13.0.2",
-    "adm-zip": "^0.6.0"
+    "adm-zip": "^0.6.1",
+    "postcss-selector-parser": "^7.1.6",
+    "qs": "^6.16.0"
   },
   "lint-staged": {
     "*.{html,php}": "markuplint",
