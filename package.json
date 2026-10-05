@@ -33,6 +33,7 @@
     "wp:restart": "npm run wp:env start --update && npm run wp:env run cli 'wp rewrite flush --hard'",
     "wp:setup": "npm run wp:start && npm run wp:env run cli 'wp rewrite flush --hard'",
     "wp:destroy": "npm run wp:env destroy",
+    "wp:prune": "bash scripts/wp-prune.sh",
     "init": "bash scripts/new-project.sh",
     "site:import": "bash scripts/site-import.sh",
     "theme:adopt": "bash scripts/theme-adopt.sh",
@@ -80,7 +81,7 @@
     "glob": "^13.0.6",
     "globals": "^17.9.0",
     "husky": "^9.1.7",
-    "lint-staged": "^17.3.0",
+    "lint-staged": "^16.4.0",
     "markuplint": "^4.11.8",
     "prettier": "^3.5.3",
     "sass": "^1.102.0",
@@ -93,8 +94,9 @@
     "vite-plugin-browser-sync": "^7.0.0",
     "vite-plugin-svg-sprite-component": "^1.0.10"
   },
+  "$comment:engines": "The floor is dictated by dependencies, not preference: vite and rolldown declare ^20.19.0 || >=22.12.0, so the previous >=20.11.0 was never actually installable. engine-strict=true in .npmrc enforces this at install time. lint-staged is held at ^16 for the same reason — 17.x requires Node >=22.22.1, which would raise this floor past several current LTS installs. If you move the project to Node 22+, lint-staged 17 becomes available and this pin can go.",
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=20.19.0"
   },
   "dependencies": {
     "aos": "^2.3.4",

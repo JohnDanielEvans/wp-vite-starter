@@ -7,8 +7,18 @@ a step that isn't obvious.
 
 ## Getting it running
 
-Requires Node 20.11+ (`sharp` sets a 20.9 floor, `import.meta.dirname` in the
-Vite config raises it to 20.11) and Docker (for `@wordpress/env`).
+Requires Node 20.19+ (or 22+) and Docker (for `@wordpress/env`). The floor comes
+from the dependencies rather than preference — vite and rolldown declare
+`^20.19.0 || >=22.12.0` — and `engine-strict=true` in `.npmrc` makes
+`npm install` refuse an unsupported Node rather than failing later with a
+cryptic native-binding error. `.nvmrc` has the version this is developed
+against.
+
+Tear the environment down with `npm run wp:destroy` **before** you move, rename
+or delete your checkout. wp-env keys each environment to the path of
+`.wp-env.json` and resolves it the same way on destroy, so changing the path
+strands a 300MB+ WordPress install and database volume that wp-env can no longer
+see. `npm run wp:prune` finds and removes ones already stranded that way.
 
 ```bash
 npm install

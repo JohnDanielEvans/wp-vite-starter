@@ -11,7 +11,7 @@ Build a classic PHP theme, but with the tooling you'd expect from any other
 
 ## Requirements
 
-- **Node 20.11+**
+- **Node 20.19+** (or 22+) — `.nvmrc` has the version this is developed against
 - **Docker** (for the local WordPress)
 
 ## Quick start
@@ -34,6 +34,13 @@ Appearance → Themes.
 The theme runs straight from `src/`, so your edits appear immediately. Run
 `npm run wp:destroy` when you're finished.
 
+> **Run `npm run wp:destroy` before moving, renaming or deleting this checkout.**
+> wp-env keys each environment to the *path* of `.wp-env.json`, and `destroy`
+> looks it up the same way — so once the path changes, its WordPress install and
+> database volume (300MB+) are stranded with no way to reach them. Editing
+> `.wp-env.json` is free; only the path matters. `npm run wp:prune` cleans up any
+> that were already stranded.
+
 ## Everyday commands
 
 | Command | What it does |
@@ -45,6 +52,7 @@ The theme runs straight from `src/`, so your edits appear immediately. Run
 | `npm run lint:fix` | Fix what can be fixed automatically |
 | `npm run format` | Run Prettier over `src/` |
 | `npm run wp:start` / `wp:destroy` | Start / tear down local WordPress |
+| `npm run wp:prune` | Remove wp-env environments whose project is gone |
 | `npm run db:export` / `db:import` | Save and restore the local database |
 | `npm run init` | Rename the theme for a new project |
 | `npm run site:import` | Import an existing site's database |

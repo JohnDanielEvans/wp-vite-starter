@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("load", () => {
   viewportSize();
   viewportFix();
-  adjustContentMargin();
 
   // Initialize AOS with modern settings
   setTimeout(() => {
@@ -46,25 +45,8 @@ window.addEventListener("load", () => {
 window.addEventListener("resize", () => {
   viewportSize();
   viewportFix();
-  adjustContentMargin();
   AOS.refresh();
 });
-
-function adjustContentMargin() {
-  const globalHeader = document.querySelector(".global-header");
-  const content = document.querySelector(".content");
-  const hero = document.querySelector("#hero");
-  
-  if (globalHeader) {
-    const headerHeight = globalHeader.offsetHeight;
-    if (content) {
-      content.style.marginTop = headerHeight + "px";
-    }
-    if (hero) {
-      hero.style.marginTop = `-${headerHeight}px`;
-    }
-  }
-}
 
 // Modern scroll-based header behavior
 (function() {
