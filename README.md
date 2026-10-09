@@ -18,12 +18,12 @@ Build a classic PHP theme, but with the tooling you'd expect from any other
 
 ```bash
 npm install
-npm run wp:start
-npm run dev
+npm start
 ```
 
-Then open **http://localhost:3030** and activate **WP Vite Starter** under
-Appearance → Themes.
+Then open **http://localhost:3030**. That's it — `npm start` brings up
+WordPress, activates this theme and starts the dev server. The first run pulls
+Docker images and takes a few minutes; after that it's seconds.
 
 | | |
 | --- | --- |
@@ -45,7 +45,8 @@ The theme runs straight from `src/`, so your edits appear immediately. Run
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Start the Vite dev server with hot reload |
+| `npm start` | WordPress + dev server, in one command |
+| `npm run dev` | Dev server only (WordPress already running) |
 | `npm run build:prod` | Full production build into `deploy/` |
 | `npm run deploy` | Production build, plus an installable `.zip` |
 | `npm run lint:check` | Lint markup, styles, and scripts |

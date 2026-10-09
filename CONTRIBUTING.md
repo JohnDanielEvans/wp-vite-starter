@@ -22,14 +22,15 @@ see. `npm run wp:prune` finds and removes ones already stranded that way.
 
 ```bash
 npm install
-npm run wp:start
-npm run dev
+npm start
 ```
 
 WordPress lands on http://localhost:8000 (`admin` / `password`), Vite on
 http://localhost:3030, BrowserSync on http://localhost:3031. The theme is
-mounted from `./src/`, so edits are live. Activate **WP Vite Starter** under
-Appearance → Themes.
+mounted from `./src/`, so edits are live, and it is activated for you by the
+`afterStart` hook in `.wp-env.json` (`scripts/wp-after-start.sh`).
+
+`npm run dev` alone is fine when WordPress is already up.
 
 Tear down with `npm run wp:destroy`.
 

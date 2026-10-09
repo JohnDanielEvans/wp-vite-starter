@@ -5,6 +5,9 @@
   "themes": ["./src/"],
   "port": 8000,
   "testsEnvironment": false,
+  "lifecycleScripts": {
+    "afterStart": "bash scripts/wp-after-start.sh"
+  },
   "mappings": {
     "wp-content/plugins": "./plugins",
     "sql": "./sql",
