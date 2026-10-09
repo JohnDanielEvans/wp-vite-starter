@@ -48,3 +48,8 @@ deploy_key
 
 # Claude Code local config — tooling preference, not part of the theme
 .claude/
+
+# Local port overrides. .env is per-developer; .wp-env.override.json is
+# generated from it by scripts/sync-wp-env.mjs and should never be committed.
+.env
+.wp-env.override.json

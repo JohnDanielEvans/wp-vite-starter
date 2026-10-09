@@ -242,18 +242,36 @@ if confirm "Reset git history and start a fresh initial commit?" "n"; then
     echo "    git remote add origin <url>"
 fi
 
-cat <<EOF
-
-✓ "$NAME" is set up.
-
-Next:
-  npm run wp:start && npm run dev
-
-Then activate "$NAME" under Appearance → Themes.
-EOF
+echo ""
+echo "✓ \"$NAME\" is set up."
 
 if [ "$STRIP" = "yes" ]; then
     echo ""
     echo "Demo content removed. What is left: the header/footer/hamburger partials,"
     echo "the picture and heading partials, the pagination helper, and index.php."
 fi
+
+# ------------------------------------------------------------------- launch
+# Finishing on "now run these two commands" is a seam: the scaffold already
+# knows everything needed to start, so offer to do it. Declining prints the
+# command, so nobody is left guessing either way.
+#
+# Never under --yes, and never when output is not a terminal. Both mean nobody
+# is watching, and handing control to a dev server that blocks until
+# interrupted would hang a script or a CI job. The other prompts read from
+# /dev/tty so they still work when stdin is piped, which also means they fall
+# back to their defaults rather than failing — fine for a yes/no about files,
+# not for something that never returns.
+echo ""
+if [ "$ASSUME_YES" -eq 0 ] && [ -t 1 ] && confirm "Start WordPress and the dev server now?" "y"; then
+    echo ""
+    exec bash "$(dirname "$0")/start.sh"
+fi
+
+cat <<EOF
+
+When you're ready:
+  npm start
+
+That brings up WordPress, activates the theme and starts the dev server.
+EOF

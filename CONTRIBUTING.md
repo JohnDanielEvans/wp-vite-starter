@@ -32,6 +32,12 @@ mounted from `./src/`, so edits are live, and it is activated for you by the
 
 `npm run dev` alone is fine when WordPress is already up.
 
+If 8000 or 3030 are taken — usually another copy of this project — copy
+`.env.example` to `.env` and change `WP_PORT` / `VITE_PORT`. Those two values
+feed wp-env, Vite, BrowserSync and the dev URLs the theme emits, via
+`scripts/ports.mjs`; nothing else needs editing. Add new port references there
+rather than as literals.
+
 Tear down with `npm run wp:destroy`.
 
 ## Before you open a PR

@@ -30,8 +30,8 @@
     "db:import": "gzip -dfk sql/wpenv.sql.gz && wp-env run cli wp db import sql/wpenv.sql && rm -f sql/wpenv.sql",
     "db:export": "wp-env run cli wp db export sql/wpenv.sql; gzip -f sql/wpenv.sql",
     "wp:env": "wp-env",
-    "wp:start": "wp-env start",
-    "wp:restart": "wp-env start --update",
+    "wp:start": "node scripts/sync-wp-env.mjs && wp-env start",
+    "wp:restart": "node scripts/sync-wp-env.mjs && wp-env start --update",
     "wp:destroy": "wp-env destroy",
     "wp:prune": "bash scripts/wp-prune.sh",
     "init": "bash scripts/new-project.sh",
@@ -48,7 +48,8 @@
     "deploy:clean": "rm -rf deploy *.zip",
     "generate-version": "node scripts/generate-version.mjs",
     "copy-theme": "bash scripts/copy-theme.sh",
-    "build:prod": "vite build && npm run generate-version && npm run press:images && npm run copy-theme"
+    "build:prod": "vite build && npm run generate-version && npm run press:images && npm run copy-theme",
+    "wp:ports": "node scripts/sync-wp-env.mjs"
   },
   "$comment:dom-serializer": "Not imported by our code. vite-plugin-svg-sprite-component require()s dom-serializer without declaring it (its own deps are only htmlparser2 and magic-string), so it resolves only when npm happens to hoist it to the top level. Declaring it here makes that explicit rather than depending on node_modules layout — without it, `npm ci` can nest it and the build dies with MODULE_NOT_FOUND. The plugin was last published in 2022 and was written against dom-serializer 1.x; 3.x is kept here because it was verified to produce byte-identical sprite output. Re-check that if it is bumped again, and remove this only if the plugin is replaced.",
   "$comment:overrides": "Transitive-only pins for advisories whose direct dependency has not yet released a bump. Each is a patched release the parent still works with, verified by exercising that parent (wp-env start and a wp-cli call for the simple-git pins, lint for postcss-selector-parser). postcss-selector-parser is pinned because npm's own 'fix' for it is to DOWNGRADE markuplint to 4.11.5, a regression rather than a fix. Re-check these on each dependency sweep and drop any the parent has caught up with.",
@@ -59,9 +60,7 @@
     "qs": "^6.16.0",
     "source-map-js": "^1.2.2",
     "http-cache-semantics": "^4.3.0",
-    "proxy-addr": "^2.0.8",
-    "@simple-git/argv-parser": "^2.0.1",
-    "simple-git": "^4.0.2"
+    "proxy-addr": "^2.0.8"
   },
   "lint-staged": {
     "*.{html,php}": "markuplint",

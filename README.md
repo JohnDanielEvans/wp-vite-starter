@@ -34,6 +34,23 @@ Docker images and takes a few minutes; after that it's seconds.
 The theme runs straight from `src/`, so your edits appear immediately. Run
 `npm run wp:destroy` when you're finished.
 
+### Running more than one of these at once
+
+Ports live in one place. Copy `.env.example` to `.env` and change them:
+
+```bash
+WP_PORT=8100
+VITE_PORT=3130
+```
+
+Everything follows — wp-env, Vite, BrowserSync (which tracks `VITE_PORT + 1`)
+and the dev-server URLs the theme prints into the page. `.env` is gitignored,
+and a one-off run needs no file at all:
+
+```bash
+WP_PORT=8100 VITE_PORT=3130 npm start
+```
+
 > **Run `npm run wp:destroy` before moving, renaming or deleting this checkout.**
 > wp-env keys each environment to the *path* of `.wp-env.json`, and `destroy`
 > looks it up the same way — so once the path changes, its WordPress install and
@@ -54,6 +71,7 @@ The theme runs straight from `src/`, so your edits appear immediately. Run
 | `npm run format` | Run Prettier over `src/` |
 | `npm run wp:start` / `wp:destroy` | Start / tear down local WordPress |
 | `npm run wp:prune` | Remove wp-env environments whose project is gone |
+| `npm run wp:ports` | Re-sync wp-env with `.env` after changing a port |
 | `npm run db:export` / `db:import` | Save and restore the local database |
 | `npm run init` | Rename the theme for a new project |
 | `npm run site:import` | Import an existing site's database |

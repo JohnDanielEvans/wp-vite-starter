@@ -2,7 +2,7 @@
 
 // Ensure IS_TYPE is defined
 if (!defined("IS_TYPE")) {
-    define("IS_TYPE", "production"); // fallback to production
+  define("IS_TYPE", "production"); // fallback to production
 }
 
 /**
@@ -11,30 +11,48 @@ if (!defined("IS_TYPE")) {
  */
 function wpvs_get_theme_version()
 {
-    static $version = null;
+  static $version = null;
 
-    if ($version !== null) {
-        return $version;
-    }
-
-    // In local dev, use a timestamp to bust cache on every request
-    if (IS_TYPE === "local") {
-        $version = time();
-        return $version;
-    }
-
-    // Read version from version.json generated during build
-    $version_file = get_template_directory() . "/version.json";
-    if (file_exists($version_file)) {
-        $version_data = json_decode(file_get_contents($version_file), true);
-        $version = $version_data["version"] ?? "1.0.0";
-    } else {
-        // Fallback to theme version from style.css
-        $theme = wp_get_theme();
-        $version = $theme->get("Version") ?: "1.0.0";
-    }
-
+  if ($version !== null) {
     return $version;
+  }
+
+  // In local dev, use a timestamp to bust cache on every request
+  if (IS_TYPE === "local") {
+    $version = time();
+    return $version;
+  }
+
+  // Read version from version.json generated during build
+  $version_file = get_template_directory() . "/version.json";
+  if (file_exists($version_file)) {
+    $version_data = json_decode(file_get_contents($version_file), true);
+    $version = $version_data["version"] ?? "1.0.0";
+  } else {
+    // Fallback to theme version from style.css
+    $theme = wp_get_theme();
+    $version = $theme->get("Version") ?: "1.0.0";
+  }
+
+  return $version;
+}
+
+/**
+ * Base URL of the Vite dev server.
+ *
+ * Reads the VITE_SERVER constant, which .wp-env.json defines and
+ * scripts/sync-wp-env.mjs keeps in step with the VITE_PORT in .env. The
+ * fallback keeps the theme working outside wp-env, where nothing defines it.
+ *
+ * This exists so the dev URL lives in one place. It used to be written out at
+ * six separate call sites, which meant changing the port required finding all
+ * of them.
+ */
+function wpvs_vite_dev_url($path = "")
+{
+  $base = defined("VITE_DEV_URL") ? VITE_DEV_URL : "http://localhost:3030";
+
+  return $base . "/" . ltrim($path, "/");
 }
 
 /**
@@ -42,11 +60,11 @@ function wpvs_get_theme_version()
  */
 function wpvs_vite_src_js($name)
 {
-    if (IS_TYPE === "local") {
-        return "http://localhost:3030/src/assets/" . ltrim($name, "/");
-    }
+  if (IS_TYPE === "local") {
+    return wpvs_vite_dev_url("src/assets/" . ltrim($name, "/"));
+  }
 
-    return get_template_directory_uri() . "/assets/js/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
+  return get_template_directory_uri() . "/assets/js/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**
@@ -54,12 +72,12 @@ function wpvs_vite_src_js($name)
  */
 function wpvs_vite_src_css($name)
 {
-    if (IS_TYPE === "local") {
-        return "http://localhost:3030/src/assets/css/" . ltrim($name, "/");
-    }
+  if (IS_TYPE === "local") {
+    return wpvs_vite_dev_url("src/assets/css/" . ltrim($name, "/"));
+  }
 
-    $name = str_replace(".scss", ".css", $name);
-    return get_template_directory_uri() . "/assets/css/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
+  $name = str_replace(".scss", ".css", $name);
+  return get_template_directory_uri() . "/assets/css/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**
@@ -67,11 +85,11 @@ function wpvs_vite_src_css($name)
  */
 function wpvs_vite_src_static($name)
 {
-    if (IS_TYPE === "local") {
-        return "http://localhost:3030/static/" . ltrim($name, "/");
-    }
+  if (IS_TYPE === "local") {
+    return wpvs_vite_dev_url("static/" . ltrim($name, "/"));
+  }
 
-    return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
+  return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**
@@ -84,15 +102,15 @@ function wpvs_vite_src_static($name)
  */
 function wpvs_vite_src_images($name, $extension = null)
 {
-    if (IS_TYPE === "local") {
-        return "http://localhost:3030/src/assets/images/" . ltrim($name, "/");
-    }
+  if (IS_TYPE === "local") {
+    return wpvs_vite_dev_url("src/assets/images/" . ltrim($name, "/"));
+  }
 
-    if ($extension === "webp" || $extension === "avif") {
-        $name = preg_replace('/\.(jpe?g|png)$/i', "." . $extension, $name);
-    }
+  if ($extension === "webp" || $extension === "avif") {
+    $name = preg_replace('/\.(jpe?g|png)$/i', "." . $extension, $name);
+  }
 
-    return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
+  return get_template_directory_uri() . "/assets/images/" . ltrim($name, "/") . "?ver=" . wpvs_get_theme_version();
 }
 
 /**

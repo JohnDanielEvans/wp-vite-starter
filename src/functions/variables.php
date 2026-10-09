@@ -15,5 +15,10 @@ define("IS_TYPE", wp_get_environment_type());
 
 // Static site chrome. In local dev this resolves to the Vite dev server; in a
 // built theme, copy-theme.sh has flattened public/static into assets/images.
-define("URL_STATIC", IS_TYPE === "local" ? "http://localhost:3030/static/" : get_theme_file_uri("/assets/images/"));
+// Base URL of the Vite dev server, defined once. VITE_SERVER comes from
+// .wp-env.json, which scripts/sync-wp-env.mjs keeps in step with VITE_PORT in
+// .env; the fallback covers running the theme outside wp-env.
+define("VITE_DEV_URL", defined("VITE_SERVER") && VITE_SERVER ? rtrim(VITE_SERVER, "/") : "http://localhost:3030");
+
+define("URL_STATIC", IS_TYPE === "local" ? VITE_DEV_URL . "/static/" : get_theme_file_uri("/assets/images/"));
 define("URL_FAVICON", URL_STATIC . "favicon.ico");

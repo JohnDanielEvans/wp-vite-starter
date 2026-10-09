@@ -9,11 +9,11 @@
       <div class="col-6 col-lg-3 mb-4">
         <h6>Quick Links</h6>
         <?php wp_nav_menu([
-            "theme_location" => "footer",
-            "menu" => "footer",
-            "container" => false,
-            "items_wrap" => '<ul class="list-unstyled">%3$s</ul>',
-            "fallback_cb" => false,
+          "theme_location" => "footer",
+          "menu" => "footer",
+          "container" => false,
+          "items_wrap" => '<ul class="list-unstyled">%3$s</ul>',
+          "fallback_cb" => false,
         ]); ?>
       </div>
     </div>
@@ -25,11 +25,11 @@
     <p class="copyright">&copy; <?php echo date("Y"); ?> <?php bloginfo("name"); ?>. All rights reserved.</p>
     <div class="last-links">
       <?php wp_nav_menu([
-          "theme_location" => "legal",
-          "menu" => "legal",
-          "container" => false,
-          "items_wrap" => "%3\$s",
-          "fallback_cb" => false,
+        "theme_location" => "legal",
+        "menu" => "legal",
+        "container" => false,
+        "items_wrap" => "%3\$s",
+        "fallback_cb" => false,
       ]); ?>
     </div>
   </div>
@@ -50,8 +50,8 @@
 
 <?php if (defined("IS_TYPE") && IS_TYPE === "local"): ?>
   <!-- Local dev: Vite handles HMR -->
-  <script type="module" src="http://localhost:3030/@vite/client"></script>
-  <script type="module" src="http://localhost:3030/src/assets/app.js"></script>
+  <script type="module" src="<?= esc_url(wpvs_vite_dev_url("@vite/client")) ?>"></script>
+  <script type="module" src="<?= esc_url(wpvs_vite_dev_url("src/assets/app.js")) ?>"></script>
 <?php else: ?>
   <!-- Production: versioned bundles -->
   <script type="module" src="<?= wpvs_vite_src_js("app.js") ?>" defer></script>

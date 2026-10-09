@@ -9,8 +9,14 @@
 
 set -uo pipefail
 
-WP_PORT=$(node -p "require('./.wp-env.json').port || 8000" 2>/dev/null || echo 8000)
-VITE_PORT=3030
+# Both ports come from scripts/ports.mjs (.env, environment, then defaults), so
+# this agrees with Vite and wp-env instead of guessing.
+eval "$(node -e "
+import('./scripts/ports.mjs').then(p => {
+  console.log('WP_PORT=' + p.WP_PORT);
+  console.log('VITE_PORT=' + p.VITE_PORT);
+}).catch(e => { console.error(e.message); process.exit(1); });
+")" || { echo "✖ Could not read port configuration (check .env)."; exit 1; }
 
 port_in_use() {
     node -e "
@@ -36,8 +42,8 @@ fi
 # Vite uses strictPort, so a busy 3030 is a hard failure rather than a fallback.
 if port_in_use "$VITE_PORT"; then
     echo "✖ Port $VITE_PORT is already in use, and Vite is configured with strictPort."
-    echo "  Usually another copy of \`npm run dev\` is still running. Stop it, or change"
-    echo "  server.port in vite.config.mjs."
+    echo "  Usually another copy of \`npm run dev\` is still running. Stop it, or set"
+    echo "  VITE_PORT in .env (see .env.example) to run this project alongside it."
     exit 1
 fi
 
@@ -45,13 +51,19 @@ fi
 if port_in_use "$WP_PORT"; then
     echo "▸ WordPress already up on http://localhost:$WP_PORT"
 else
+    # Keep .wp-env.override.json in step with .env before wp-env reads it.
+    node scripts/sync-wp-env.mjs || {
+        echo "✖ Could not write .wp-env.override.json"
+        exit 1
+    }
+
     echo "▸ Starting WordPress (first run pulls images — a few minutes)..."
     if ! npx --no-install wp-env start; then
         echo ""
         echo "✖ wp-env could not start."
-        echo "  If it reports a port conflict, another project is on $WP_PORT — change"
-        echo "  \"port\" in .wp-env.json. If it reports a missing image, check your"
-        echo "  network and re-run."
+        echo "  If it reports a port conflict, another project is on $WP_PORT — set"
+        echo "  WP_PORT in .env. If it reports a missing image, check your network"
+        echo "  and re-run."
         exit 1
     fi
 fi

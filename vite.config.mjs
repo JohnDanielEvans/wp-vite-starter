@@ -3,12 +3,17 @@ import path from "path";
 import { defineConfig } from "vite";
 import VitePluginBrowserSync from "vite-plugin-browser-sync";
 import svgSpritePluginCjs from "vite-plugin-svg-sprite-component";
+import { VITE_PORT, BROWSERSYNC_PORT, WP_URL } from "./scripts/ports.mjs";
 
 // vite-plugin-svg-sprite-component is CommonJS with `exports.default`. Loaded as
 // real ESM (this file is .mjs) Node hands back the module object rather than the
 // factory, so the callable lives one level down. The `??` keeps this working if
 // the package ever ships a proper ESM build.
 const svgSpritePlugin = svgSpritePluginCjs.default ?? svgSpritePluginCjs;
+
+// Ports come from .env (or the environment), not from literals here, so two
+// checkouts of this project can run side by side without editing config.
+// See scripts/ports.mjs.
 
 export default defineConfig({
   publicDir: "public",
@@ -17,10 +22,10 @@ export default defineConfig({
     VitePluginBrowserSync({
       dev: {
         bs: {
-          proxy: "http://localhost:8000",
+          proxy: WP_URL,
           serveStatic: ["public"],
           ui: false,
-          port: 3031,
+          port: BROWSERSYNC_PORT,
           open: false,
           ghostMode: false,
         },
@@ -83,14 +88,14 @@ export default defineConfig({
     host: true,
     cors: true,
     strictPort: true,
-    port: 3030,
+    port: VITE_PORT,
     https: false,
     fs: {
       strict: false,
     },
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: WP_URL,
         changeOrigin: true,
         secure: false,
       },
