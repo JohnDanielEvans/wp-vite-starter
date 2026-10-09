@@ -115,3 +115,92 @@ jobs:
             exit 1
           fi
           exit $fail
+
+  smoke:
+    name: Boot WordPress
+    runs-on: ubuntu-latest
+    # A cold `wp-env start` is the point of this job. Lint and build never
+    # execute wp-env, which is how a simple-git override that broke
+    # downloadWPPHPUnit — "SimpleGit is not a function" — reached main: a warm
+    # start short-circuits past it, so only a start from nothing catches it.
+    timeout-minutes: 15
+
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 💻 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🐳 Start WordPress
+        run: npm run wp:start
+
+      - name: 🌐 Wait for the site to answer
+        run: |
+          for attempt in $(seq 1 30); do
+            code=$(curl -s -o /tmp/home.html -w '%{http_code}' http://localhost:8000/ || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "HTTP 200 after ${attempt} attempt(s)"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::Site never returned 200 (last code: ${code:-none})"
+          exit 1
+
+      - name: ✅ Assert the theme actually rendered
+        run: |
+          # A blank 200 is the failure mode worth catching here: an unreadable
+          # theme directory makes WordPress skip the theme and serve an empty
+          # body with only a PHP notice in the log.
+          bytes=$(wc -c < /tmp/home.html | tr -d ' ')
+          if [ "$bytes" -lt 500 ]; then
+            echo "::error::Homepage returned only ${bytes} bytes — the theme probably did not load"
+            head -c 400 /tmp/home.html
+            exit 1
+          fi
+          echo "Homepage is ${bytes} bytes"
+
+          # The afterStart hook should have activated it; without that a fresh
+          # database comes up on a WordPress default theme and still returns 200.
+          active=$(npx --no-install wp-env run cli wp theme list --status=active --field=name 2>/dev/null | tr -d '\r' | tr -d '\n')
+          if [ "$active" != "src" ]; then
+            echo "::error::Active theme is '${active:-none}', expected 'src' — the afterStart hook did not run"
+            exit 1
+          fi
+          echo "Active theme: $active"
+
+          # In local mode the footer emits module tags at the Vite dev server.
+          # This is what proves VITE_SERVER reaches the theme.
+          if ! grep -q 'src="http://localhost:3030/src/assets/app.js"' /tmp/home.html; then
+            echo "::error::Dev bundle tag missing — the Vite URL is not being emitted"
+            grep -o 'src="http://localhost:[0-9]*[^"]*"' /tmp/home.html | sort -u || true
+            exit 1
+          fi
+          echo "Dev bundle tag present"
+
+      - name: 🔌 Assert a port override reaches wp-env
+        run: |
+          # Cheap and Docker-free: the override file is what carries .env ports
+          # into wp-env, and it is easy to break without noticing.
+          WP_PORT=8123 VITE_PORT=3123 node scripts/sync-wp-env.mjs
+          node -e "
+          const o = require('./.wp-env.override.json');
+          const fail = m => { console.error('::error::' + m); process.exit(1); };
+          if (o.port !== 8123) fail('override port is ' + o.port + ', expected 8123');
+          if (o.config?.VITE_SERVER !== 'http://localhost:3123') fail('VITE_SERVER is ' + o.config?.VITE_SERVER);
+          console.log('Override file correct:', JSON.stringify(o));
+          "
+          # And that it cleans up after itself when the ports match again.
+          node scripts/sync-wp-env.mjs
+          if [ -f .wp-env.override.json ]; then
+            echo "::error::.wp-env.override.json was left behind when ports match the defaults"
+            exit 1
+          fi
+          echo "Override removed when redundant"

@@ -57,8 +57,13 @@ prettier) over staged files, so most style issues are fixed for you on commit.
 Don't hand-format around the tools — if a rule is wrong, change the rule and say
 why in the PR.
 
-CI runs both of those on every pull request, plus `php -l` over the theme's PHP
-and a check that the packaged theme is complete. Running them locally first just
+CI runs both of those on every pull request, plus `php -l` over the theme's PHP,
+a check that the packaged theme is complete, and a smoke test that boots
+WordPress from nothing and asserts the homepage renders with this theme active.
+
+That last one exists because lint and build never execute wp-env: a dependency
+change once broke `wp-env start` and reached main, because a warm start
+short-circuits past the code that failed. Running them locally first just
 saves you a round trip.
 
 There is no test suite. Verification is: does it build, does it lint, and does
